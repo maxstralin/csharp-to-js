@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <PackageOutputPath>..\..\artifacts\</PackageOutputPath>
+    <AssemblyName>dotnet-csharp-to-js</AssemblyName>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>csharptojs</ToolCommandName>
+    <PackageId>csharp-to-js</PackageId>
+    <Version>0.0.1</Version>
+    <Authors>Max Strålin</Authors>
+    <Company />
+    <Description>A .NET core global tool for converting C# models and DTOs to Javascript</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/maxstralin/csharp-to-js</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/maxstralin/csharp-to-js</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>c#;javascript;js;dto;models;entities;csharp;conversion;</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.4" />
+    <PackageReference Include="McMaster.NETCore.Plugins" Version="0.2.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\CSharpToJs.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="csharptojs.config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

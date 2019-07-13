@@ -1,0 +1,11 @@
+{
+  "assemblies": [
+    {
+      "name": "ClassLibrarySample",
+      "include": [ "ClassLibrarySample.Models" ],
+      "exclude": [ "ClassLibrarySample.Models.ExcludeMe" ]
+    }
+  ],
+  "assembliesPath": "../../../../../samples/ConsoleAppSample/bin/debug/netcoreapp2.2",
+  "outputPath": "models"
+}
