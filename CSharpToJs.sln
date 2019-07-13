@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassLibrarySample", "sampl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpToJs.Core", "src\Core\CSharpToJs.Core.csproj", "{A7EEF2AE-2AFA-4A97-A8F5-7CFEA6825A3A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpToJs.Cli", "src\cli\CSharpToJs.Cli.csproj", "{C17EA55B-DD84-4315-A225-FD9221924B34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpToJs.Cli", "src\Cli\CSharpToJs.Cli.csproj", "{C17EA55B-DD84-4315-A225-FD9221924B34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
