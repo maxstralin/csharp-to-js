@@ -25,6 +25,8 @@ namespace CSharpToJs.Core.Services
 
         private List<JsClass> JsClasses { get; } = new List<JsClass>();
 
+        private IPropertyResolver PropertyResolver { get; } = new PropertyResolver();
+
         public CSharpToJsConverter(CSharpToJsConfig config)
         {
             this.config = config;
@@ -62,7 +64,7 @@ namespace CSharpToJs.Core.Services
 
                 var path = Path.Combine(nugetFolder, assemblyName.Name.ToLower(), versionString, "lib");
                 if (!Directory.Exists(path)) continue;
-                //TODO: I would imagine that this could cause some issues with multiple build, e.g. netstandard1.6 and netstandard2.0 but tested enough
+                //TODO: I would imagine that this could cause some issues with multiple build, e.g. netstandard1.6 and netstandard2.0 but not tested enough
                 var directories = Directory.EnumerateDirectories(path)
                     .Where(a => a.Contains("netcore") || a.Contains("netstandard")).ToList();
 
@@ -96,14 +98,11 @@ namespace CSharpToJs.Core.Services
             Directory.CreateDirectory(OutputPath);
         }
 
+        //TODO: This needs to be split up, not very SOLID atm
         public bool Convert()
         {
             if (!NoClean) CleanOutputDirectory();
             CreateOutputDirectory();
-
-            
-
-            var propertyResolver = new PropertyResolver();
 
             foreach (var assemblyDetails in config.Assemblies)
             {
@@ -130,7 +129,7 @@ namespace CSharpToJs.Core.Services
                             dependencies.Add(type.BaseType);
                         }
 
-                        var props = propertyResolver.GetProperties(type);
+                        var props = PropertyResolver.GetProperties(type);
 
                         var instance = Activator.CreateInstance(type);
 
@@ -144,7 +143,6 @@ namespace CSharpToJs.Core.Services
                             if (jsProp.PropertyType == JsPropertyType.Instance) dependencies.Add(prop.PropertyType);
                             jsProperties.Add(jsProp);
                         }
-
 
                         var jsClass = new JsClass
                         {
@@ -160,8 +158,7 @@ namespace CSharpToJs.Core.Services
             }
 
             var dependencyResolver = new JsClassDependencyResolver(JsClasses);
-            var propertyWriter = new JsPropertyWriter();
-            var writer = new JsClassWriter(dependencyResolver, propertyWriter);
+            var writer = new JsClassWriter(dependencyResolver);
 
             //TODO: Should be its own class for writing files
             foreach (var jsClass in JsClasses)

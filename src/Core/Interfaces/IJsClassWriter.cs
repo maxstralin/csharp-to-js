@@ -2,7 +2,7 @@
 
 namespace CSharpToJs.Core.Interfaces
 {
-    public interface IJsClassWriter
+    public interface IClassWriter
     {
         string Write(JsClass jsClass);
     }

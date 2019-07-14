@@ -14,18 +14,13 @@ namespace CSharpToJs.Cli
 {
     class Program
     {
+        //TODO: Tests..
         static int Main(string[] args)
         {
-            var app = new CommandLineApplication();
-            app.HelpOption();
-            
-            var configPathArg = app.Argument("configPath",
-                "The config path. File must be named csharptojs.config.json. Defaults to executing directory.");
-            var configPath = Environment.CurrentDirectory;
-
+            var app = CommandLineFactory.Create();
             app.OnExecute(() =>
             {
-                configPath = configPathArg.Value ?? configPath;
+                var configPath = app.Arguments.SingleOrDefault()?.Value ?? Environment.CurrentDirectory;
 
                 var config =
                     JsonConvert.DeserializeObject<CSharpToJsConfig>(File.ReadAllText(Path.Combine(configPath, "csharptojs.config.json")));

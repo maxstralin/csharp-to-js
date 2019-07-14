@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace CSharpToJs.Tests.Mocks
@@ -9,6 +10,7 @@ namespace CSharpToJs.Tests.Mocks
         public string IAmAProperty { get; set; }
 
         // ReSharper disable once UnusedMember.Local
+        [ExcludeFromCodeCoverage]
         private string PrivateAutoProperty { get; set; }
 
         public string Field = "";
