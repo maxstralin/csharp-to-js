@@ -101,15 +101,9 @@ namespace CSharpToJs.Core.Services
             if (!NoClean) CleanOutputDirectory();
             CreateOutputDirectory();
 
-            var serialiserSettings = new JsonSerializerSettings
-            {
-                Converters = new List<JsonConverter>() { new StringEnumConverter() },
-                ContractResolver = new DefaultContractResolver()
-                {
-                    NamingStrategy = new CamelCaseNamingStrategy()
-                }
-            };
+            
 
+            var propertyResolver = new PropertyResolver();
 
             foreach (var assemblyDetails in config.Assemblies)
             {
@@ -120,7 +114,6 @@ namespace CSharpToJs.Core.Services
 
                 foreach (var ns in assemblyDetails.Include)
                 {
-                    var propertyNameConverter = new PropertyNameConverter();
                     var foundTypes = GetTypesInAssembly(assembly, ns).ToList();
 
                     Console.WriteLine($"Found {foundTypes.Count} types in {ns}");
@@ -137,8 +130,7 @@ namespace CSharpToJs.Core.Services
                             dependencies.Add(type.BaseType);
                         }
 
-                        var propertyResolver = new PropertyResolver(type);
-                        var props = propertyResolver.GetProperties();
+                        var props = propertyResolver.GetProperties(type);
 
                         var instance = Activator.CreateInstance(type);
 
@@ -146,35 +138,10 @@ namespace CSharpToJs.Core.Services
                         var filePath = Path.Combine(OutputPath, assemblyDetails.SubFolder ?? string.Empty,
                             relativeOutputPath, $"{type.Name}.js");
 
-                        //TODO: Needs to be extracted into its own class for handling prop conversion
                         foreach (var prop in props)
                         {
-                            var propName = propertyNameConverter.GetPropertyName(prop);
-                            var propValue = prop.GetValue(instance);
-
-                            var jsProp = new JsProperty
-                            {
-                                Name = propName,
-                                OriginalValue = propValue,
-                                PropertyInfo = prop
-                            };
-
-                            //Nested complex type which should be instantiated through an import
-                            if (propValue != null && !prop.PropertyType.IsEnum &&
-                                !ExcludedNamespaces.Contains(prop.PropertyType.Namespace) &&
-                                IncludedNamespaces.Any(a => prop.PropertyType.Namespace.Contains(a)))
-                            {
-                                dependencies.Add(prop.PropertyType);
-                                jsProp.Value = $"new {prop.PropertyType.Name}();";
-                                jsProp.PropertyType = JsPropertyType.Instance;
-                            }
-                            else
-                            {
-                                jsProp.Value =
-                                    JsonConvert.SerializeObject(propValue, Formatting.None, serialiserSettings) + ";";
-                                jsProp.PropertyType = JsPropertyType.Plain;
-                            }
-
+                            var jsProp = new JsPropertyConverter(prop, prop.GetValue(instance), IncludedNamespaces, ExcludedNamespaces).Convert();
+                            if (jsProp.PropertyType == JsPropertyType.Instance) dependencies.Add(prop.PropertyType);
                             jsProperties.Add(jsProp);
                         }
 

@@ -6,9 +6,9 @@ namespace CSharpToJs.Core.Services
 {
     public class PropertyNameConverter : IPropertyNameConverter
     {
-        public string GetPropertyName(PropertyInfo property)
+        public string GetPropertyName(PropertyInfo propertyInfo)
         {
-            var span = property.Name.AsSpan();
+            var span = propertyInfo.Name.AsSpan();
             return span[0].ToString().ToLower()+span.Slice(1).ToString();
         }
     }

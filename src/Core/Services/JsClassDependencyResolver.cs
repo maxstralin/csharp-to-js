@@ -19,11 +19,5 @@ namespace CSharpToJs.Core.Services
         {
             return jsClasses.Where(a => jsClass.Dependencies.Select(b => b.FullName).Contains(a.OriginalType.FullName));
         }
-
-        public JsClass Resolve(Type type)
-        {
-            return jsClasses.SingleOrDefault(a => a.OriginalType.FullName == type.FullName);
-        }
-
     }
 }

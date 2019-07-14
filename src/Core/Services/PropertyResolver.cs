@@ -8,16 +8,9 @@ namespace CSharpToJs.Core.Services
 {
     public class PropertyResolver : IPropertyResolver
     {
-        private readonly Type type;
-
-        public PropertyResolver(Type type)
+        public IEnumerable<PropertyInfo> GetProperties(Type type)
         {
-            this.type = type;
-        }
-        public IEnumerable<PropertyInfo> GetProperties()
-        {
-            return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static |
-                               BindingFlags.NonPublic);
+            return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
         }
     }
 }

@@ -7,6 +7,5 @@ namespace CSharpToJs.Core.Interfaces
     public interface IJsClassDependencyResolver
     {
         IEnumerable<JsClass> Resolve(JsClass jsClass);
-        JsClass Resolve(Type type);
     }
 }

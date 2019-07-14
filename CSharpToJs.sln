@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpToJs.Core", "src\Core
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpToJs.Cli", "src\Cli\CSharpToJs.Cli.csproj", "{C17EA55B-DD84-4315-A225-FD9221924B34}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F537EAE2-9A3F-4D13-A386-88013AE86390}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpToJs.Tests", "tests\CSharpToJs.Tests\CSharpToJs.Tests.csproj", "{D2715FC3-0F71-4846-BC2F-D9D42DB9B452}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +41,10 @@ Global
 		{C17EA55B-DD84-4315-A225-FD9221924B34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C17EA55B-DD84-4315-A225-FD9221924B34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C17EA55B-DD84-4315-A225-FD9221924B34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2715FC3-0F71-4846-BC2F-D9D42DB9B452}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2715FC3-0F71-4846-BC2F-D9D42DB9B452}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2715FC3-0F71-4846-BC2F-D9D42DB9B452}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2715FC3-0F71-4846-BC2F-D9D42DB9B452}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +54,7 @@ Global
 		{78747927-5971-41C3-B448-FF54A515EE10} = {0BF4BB00-52E5-4AEC-8D3F-CAE0EA540625}
 		{A7EEF2AE-2AFA-4A97-A8F5-7CFEA6825A3A} = {558F1A59-F5BA-4F20-AD62-50C5143FBC62}
 		{C17EA55B-DD84-4315-A225-FD9221924B34} = {558F1A59-F5BA-4F20-AD62-50C5143FBC62}
+		{D2715FC3-0F71-4846-BC2F-D9D42DB9B452} = {F537EAE2-9A3F-4D13-A386-88013AE86390}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EB1A271A-5AF4-438F-B7D9-97A534E310A2}
