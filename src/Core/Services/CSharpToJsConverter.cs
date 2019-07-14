@@ -8,6 +8,7 @@ using CSharpToJs.Core.Interfaces;
 using CSharpToJs.Core.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using NuGet.Configuration;
 
 namespace CSharpToJs.Core.Services
@@ -102,7 +103,11 @@ namespace CSharpToJs.Core.Services
 
             var serialiserSettings = new JsonSerializerSettings
             {
-                Converters = new List<JsonConverter>() { new StringEnumConverter() }
+                Converters = new List<JsonConverter>() { new StringEnumConverter() },
+                ContractResolver = new DefaultContractResolver()
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                }
             };
 
 
@@ -132,7 +137,7 @@ namespace CSharpToJs.Core.Services
                             dependencies.Add(type.BaseType);
                         }
 
-                        var propertyResolver = new PropertyResolver(type, isDerived);
+                        var propertyResolver = new PropertyResolver(type);
                         var props = propertyResolver.GetProperties();
 
                         var instance = Activator.CreateInstance(type);
@@ -141,6 +146,7 @@ namespace CSharpToJs.Core.Services
                         var filePath = Path.Combine(OutputPath, assemblyDetails.SubFolder ?? string.Empty,
                             relativeOutputPath, $"{type.Name}.js");
 
+                        //TODO: Needs to be extracted into its own class for handling prop conversion
                         foreach (var prop in props)
                         {
                             var propName = propertyNameConverter.GetPropertyName(prop);
@@ -148,7 +154,10 @@ namespace CSharpToJs.Core.Services
 
                             var jsProp = new JsProperty
                             {
-                                Name = propName
+                                Name = propName,
+                                OriginalValue = propValue,
+                                OriginalType = prop.PropertyType,
+                                PropertyInfo = prop
                             };
 
                             //Nested complex type which should be instantiated through an import
@@ -158,13 +167,13 @@ namespace CSharpToJs.Core.Services
                             {
                                 dependencies.Add(prop.PropertyType);
                                 jsProp.Value = $"new {prop.PropertyType.Name}();";
-                                jsProp.Type = JsPropertyType.Instance;
+                                jsProp.PropertyType = JsPropertyType.Instance;
                             }
                             else
                             {
                                 jsProp.Value =
                                     JsonConvert.SerializeObject(propValue, Formatting.None, serialiserSettings) + ";";
-                                jsProp.Type = JsPropertyType.Plain;
+                                jsProp.PropertyType = JsPropertyType.Plain;
                             }
 
                             jsProperties.Add(jsProp);
@@ -178,7 +187,6 @@ namespace CSharpToJs.Core.Services
                             Dependencies = dependencies.Distinct(),
                             FilePath = filePath,
                             OriginalType = type,
-                            InheritsType = isDerived ? type.BaseType : null
                         };
                         JsClasses.Add(jsClass);
                     }
@@ -189,6 +197,7 @@ namespace CSharpToJs.Core.Services
             var propertyWriter = new JsPropertyWriter();
             var writer = new JsClassWriter(dependencyResolver, propertyWriter);
 
+            //TODO: Should be its own class for writing files
             foreach (var jsClass in JsClasses)
             {
                 var res = writer.Write(jsClass);

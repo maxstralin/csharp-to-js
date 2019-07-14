@@ -33,15 +33,19 @@ namespace CSharpToJs.Core.Services
             }
 
             stringBuilder.Append($"class {jsClass.Name} ");
-            if (jsClass.InheritsType != null)
+
+            var inherits = dependencies.SingleOrDefault(a => a.OriginalType == jsClass.OriginalType.BaseType);
+
+            if (inherits != null)
             {
-                stringBuilder.Append($"extends {dependencies.Single(a => a.OriginalType == jsClass.InheritsType).Name}");
+                stringBuilder.Append($"extends {inherits.Name}");
             }
+
 
             stringBuilder.AppendLine(" {");
             stringBuilder.AppendLine("\tconstructor() {");
 
-            foreach (var jsProperty in jsClass.Properties)
+            foreach (var jsProperty in jsClass.Properties.Where(a => a.PropertyInfo.DeclaringType == jsClass.OriginalType))
             {
                 stringBuilder.AppendLine($"\t\t{jsPropertyWriter.Write(jsProperty)}");
             }
