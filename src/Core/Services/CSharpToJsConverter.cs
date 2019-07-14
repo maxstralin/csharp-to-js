@@ -156,7 +156,6 @@ namespace CSharpToJs.Core.Services
                             {
                                 Name = propName,
                                 OriginalValue = propValue,
-                                OriginalType = prop.PropertyType,
                                 PropertyInfo = prop
                             };
 

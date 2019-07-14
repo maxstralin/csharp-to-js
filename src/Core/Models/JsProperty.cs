@@ -9,7 +9,6 @@ namespace CSharpToJs.Core.Models
         public string Name { get; set; }
         public string Value { get; set; }
         public object OriginalValue { get; set; }
-        public Type OriginalType { get; set; }
         public PropertyInfo PropertyInfo { get; set; }
         public override string ToString()
         {
