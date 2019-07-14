@@ -7,8 +7,8 @@
     <AssemblyName>dotnet-csharp-to-js</AssemblyName>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>csharptojs</ToolCommandName>
-    <PackageId>csharp-to-js</PackageId>
-    <Version>0.0.1</Version>
+    <PackageId>CSharpToJs</PackageId>
+    <Version>0.1.0</Version>
     <Authors>Max Strålin</Authors>
     <Company />
     <Description>A .NET core global tool for converting C# models and DTOs to Javascript</Description>
@@ -24,12 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CSharpToJs.Core" Version="0.1.0" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.4" />
-    <PackageReference Include="McMaster.NETCore.Plugins" Version="0.2.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Core\CSharpToJs.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
