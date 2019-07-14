@@ -30,6 +30,7 @@ namespace CSharpToJs.Tests
             var jsProp = converter.Convert();
 
             Assert.Same(orgValue, jsProp.OriginalValue);
+            Assert.Same(propInfo, jsProp.PropertyInfo);
             Assert.Equal(expectedPropName, jsProp.Name);
             Assert.Equal(JsPropertyType.Plain, jsProp.PropertyType);
             Assert.Equal(expectedValue, jsProp.Value);
@@ -91,6 +92,18 @@ namespace CSharpToJs.Tests
             Assert.Equal(expectedPropName, jsProp.Name);
             Assert.Equal(JsPropertyType.Plain, jsProp.PropertyType);
             Assert.Equal(expectedValue, jsProp.Value);
+        }
+
+        [Fact]
+        public void SetCustomNameConverter()
+        {
+            var converter = new JsPropertyConverter(null, null, null, null);
+            var nameConverter = new PropertyNameConverterMock();
+
+            converter.PropertyNameConverter = nameConverter;
+
+            Assert.Equal(nameConverter, converter.PropertyNameConverter);
+
         }
     }
 }
