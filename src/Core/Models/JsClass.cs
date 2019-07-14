@@ -11,6 +11,5 @@ namespace CSharpToJs.Core.Models
         public IEnumerable<Type> Dependencies { get; set; } = Enumerable.Empty<Type>();
         public string FilePath { get; set; }
         public Type OriginalType { get; set; }
-        public Type InheritsType { get; set; }
     }
 }

@@ -9,17 +9,15 @@ namespace CSharpToJs.Core.Services
     public class PropertyResolver : IPropertyResolver
     {
         private readonly Type type;
-        private readonly bool isDerived;
 
-        public PropertyResolver(Type type, bool isDerived)
+        public PropertyResolver(Type type)
         {
             this.type = type;
-            this.isDerived = isDerived;
         }
         public IEnumerable<PropertyInfo> GetProperties()
         {
             return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static |
-                               BindingFlags.NonPublic).Where(a => !isDerived || a.DeclaringType == type);
+                               BindingFlags.NonPublic);
         }
     }
 }
