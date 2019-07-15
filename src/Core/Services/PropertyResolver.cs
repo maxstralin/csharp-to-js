@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CSharpToJs.Core.Attributes;
 using CSharpToJs.Core.Interfaces;
 
 namespace CSharpToJs.Core.Services
@@ -10,7 +11,7 @@ namespace CSharpToJs.Core.Services
     {
         public IEnumerable<PropertyInfo> GetProperties(Type type)
         {
-            return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+            return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static).Where(a => a.GetCustomAttribute(typeof(JsIgnoreAttribute)) == null);
         }
     }
 }

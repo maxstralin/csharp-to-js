@@ -80,6 +80,17 @@ namespace CSharpToJs.Tests
         }
 
         [Fact]
+        public void DefaultPropertyResolverIgnoreAttribute()
+        {
+            var propertyResolver = new PropertyResolver();
+            var shouldNotContain = nameof(DummyClass.IShouldBeIgnored);
+
+            var props = propertyResolver.GetProperties(typeof(DummyClass)).ToList();
+
+            Assert.DoesNotContain(props, a => a.Name == shouldNotContain);
+        }
+
+        [Fact]
         public void JsImportWriter()
         {
             var writer = new JsImportWriter();
