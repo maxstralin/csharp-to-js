@@ -5,4 +5,5 @@ class ComplexType  {
 		this.anotherProperty = null;
 		this.model2 = new Model2();
 	}
+}
 export default ComplexType;

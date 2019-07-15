@@ -7,4 +7,5 @@ class Model  {
 		this.nulledComplexType = null;
 		this.complexType = new ComplexType();
 	}
+}
 export default Model;
