@@ -11,7 +11,7 @@ namespace CSharpToJs.Core.Services
     {
         public IEnumerable<PropertyInfo> GetProperties(Type type)
         {
-            return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static).Where(a => a.GetCustomAttribute(typeof(JsIgnoreAttribute)) == null);
+            return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static).Where(prop => !Attribute.IsDefined(prop, typeof(JsIgnoreAttribute)));
         }
     }
 }
