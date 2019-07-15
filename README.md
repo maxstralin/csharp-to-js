@@ -3,6 +3,11 @@
 
 A global .NET Core tool to easily convert C# models and classes into Javascript classes
 
+**C# Input**
+![](./docs/cs-input.png)
+**JS output**
+![](./docs/js-output.png)
+
 ## Installation
 **Install the tool**
 ```sh
