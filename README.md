@@ -53,7 +53,7 @@ Docs in progress. See [example in Samples](https://github.com/maxstralin/csharp-
 
 
 ## Release History
-* 0.2.0
+* 0.2.1
     * [JsIgnore] attribute added
 
 * 0.1.0
