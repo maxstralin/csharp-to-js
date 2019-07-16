@@ -7,6 +7,7 @@ using System.Text;
 using CSharpToJs.Core.Models;
 using CSharpToJs.Core.Services;
 using CSharpToJs.Tests.Mocks;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace CSharpToJs.Tests
@@ -80,6 +81,17 @@ namespace CSharpToJs.Tests
         }
 
         [Fact]
+        public void DefaultPropertyResolverIgnoreAttribute()
+        {
+            var propertyResolver = new PropertyResolver();
+            var shouldNotContain = nameof(DummyClass.IShouldBeIgnored);
+
+            var props = propertyResolver.GetProperties(typeof(DummyClass)).ToList();
+
+            Assert.DoesNotContain(props, a => a.Name == shouldNotContain);
+        }
+
+        [Fact]
         public void JsImportWriter()
         {
             var writer = new JsImportWriter();
@@ -106,5 +118,16 @@ namespace CSharpToJs.Tests
             Assert.Equal("import Dep2 from '../Dep2.js';", statementAbove);
         }
 
+        [Fact]
+        public void DefaultAssemblyTypeResolver()
+        {
+            var assembly = Assembly.LoadFrom(Path.Combine(Environment.CurrentDirectory, "CSharpToJs.Tests.dll"));
+            var resolver = new AssemblyTypeResolver(assembly, "CSharpToJs.Tests.Mocks", null);
+
+            var types = resolver.Resolve();
+
+            Assert.Contains(typeof(DummyClass), types);
+            Assert.DoesNotContain(typeof(IgnoredClass), types);
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using CSharpToJs.Core.Attributes;
 
 namespace CSharpToJs.Tests.Mocks
 {
@@ -16,6 +17,11 @@ namespace CSharpToJs.Tests.Mocks
         public string Field = "";
 
         public ComplexType AComplexType { get; set; } = new ComplexType();
+
+        [JsIgnore]
+        public string IShouldBeIgnored { get; set; } = "true";
+
+        public IgnoredClass IgnoredClass { get; set; } = new IgnoredClass();
 
     }
 }

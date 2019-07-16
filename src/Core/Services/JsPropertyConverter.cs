@@ -52,13 +52,13 @@ namespace CSharpToJs.Core.Services
                 !excludedNamespaces.Contains(propertyInfo.PropertyType.Namespace) &&
                 includedNamespaces.Any(a => propertyInfo.PropertyType.Namespace.Contains(a)))
             {
-                jsProp.Value = $"new {propertyInfo.PropertyType.Name}();";
+                jsProp.Value = $"new {propertyInfo.PropertyType.Name}()";
                 jsProp.PropertyType = JsPropertyType.Instance;
             }
             else
             {
                 jsProp.Value =
-                    JsonConvert.SerializeObject(propValue, Formatting.None, SerializerSettings) + ";";
+                    JsonConvert.SerializeObject(propValue, Formatting.None, SerializerSettings);
                 jsProp.PropertyType = JsPropertyType.Plain;
             }
 

@@ -80,13 +80,6 @@ namespace CSharpToJs.Core.Services
             }
         }
 
-        private IEnumerable<Type> GetTypesInAssembly(Assembly assembly, string @namespace)
-        {
-            return assembly.GetExportedTypes().Where(a =>
-                !a.ContainsGenericParameters && !a.IsInterface && !a.IsEnum && a.Namespace.StartsWith(@namespace) &&
-                !ExcludedNamespaces.Contains(a.Namespace));
-        }
-
         private void CleanOutputDirectory()
         {
             if (!Directory.Exists(OutputPath)) return;
@@ -113,7 +106,8 @@ namespace CSharpToJs.Core.Services
 
                 foreach (var ns in assemblyDetails.Include)
                 {
-                    var foundTypes = GetTypesInAssembly(assembly, ns).ToList();
+                    var typeResolver = new AssemblyTypeResolver(assembly, ns, ExcludedNamespaces);
+                    var foundTypes = typeResolver.Resolve().ToList();
 
                     Console.WriteLine($"Found {foundTypes.Count} types in {ns}");
 

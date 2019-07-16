@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using CSharpToJs.Core.Models;
 using CSharpToJs.Core.Services;
@@ -23,7 +24,7 @@ namespace CSharpToJs.Tests
             var propInfo = typeof(DummyClass).GetProperty(nameof(DummyClass.IAmAProperty));
             var orgValue = propInfo.GetValue(dummy);
             var expectedPropName = "iAmAProperty";
-            var expectedValue = $"\"{dummy.IAmAProperty}\";";
+            var expectedValue = $"\"{dummy.IAmAProperty}\"";
 
             var converter = new JsPropertyConverter(propInfo, orgValue, new List<string>(), new List<string>());
 
@@ -50,7 +51,7 @@ namespace CSharpToJs.Tests
             var propInfo = typeof(DummyClass).GetProperty(nameof(DummyClass.AComplexType));
             var orgValue = propInfo.GetValue(dummy);
             var expectedPropName = "aComplexType";
-            var expectedValue = "new ComplexType();";
+            var expectedValue = "new ComplexType()";
 
             var converter = new JsPropertyConverter(propInfo, orgValue, new List<string> { "CSharpToJs.Tests.Mocks" }, new List<string>());
 
@@ -76,13 +77,7 @@ namespace CSharpToJs.Tests
             var propInfo = typeof(DummyClass).GetProperty(nameof(DummyClass.AComplexType));
             var orgValue = propInfo.GetValue(dummy);
             var expectedPropName = "aComplexType";
-            var expectedValue = JsonConvert.SerializeObject(dummy.AComplexType, Formatting.None, new JsonSerializerSettings
-            {
-                ContractResolver = new DefaultContractResolver()
-                {
-                    NamingStrategy = new CamelCaseNamingStrategy()
-                }
-            })+";";
+            var expectedValue = JsonConvert.SerializeObject(dummy.AComplexType, Formatting.None, Settings.SerializerSettings);
 
             var converter = new JsPropertyConverter(propInfo, orgValue, new List<string> { "CSharpToJs.Tests.Mocks" }, new List<string> { "CSharpToJs.Tests.Mocks" });
 
@@ -104,6 +99,23 @@ namespace CSharpToJs.Tests
 
             Assert.Equal(nameConverter, converter.PropertyNameConverter);
 
+        }
+
+        [Fact]
+        public void EnsureDependenciesAreSerializedForJsIgnore()
+        {
+            var propResolver = new PropertyResolver();
+            var instance = new DummyClass();
+            var propValue = instance.IgnoredClass;
+
+            var props = propResolver.GetProperties(typeof(DummyClass));
+            var prop = props.Single(a => a.Name == nameof(DummyClass.IgnoredClass));
+            var propConverter = new JsPropertyConverter(prop, propValue, null, null);
+            var jsProp = propConverter.Convert();
+
+            Assert.Equal(JsPropertyType.Plain, jsProp.PropertyType);
+            Assert.Equal(jsProp.Value,
+                JsonConvert.SerializeObject(new IgnoredClass(), Formatting.None, Settings.SerializerSettings));
         }
     }
 }

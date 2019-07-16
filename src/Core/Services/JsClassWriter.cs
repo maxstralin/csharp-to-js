@@ -44,7 +44,7 @@ namespace CSharpToJs.Core.Services
 
             foreach (var jsProperty in jsClass.Properties.Where(a => a.PropertyInfo.DeclaringType == jsClass.OriginalType))
             {
-                stringBuilder.AppendLine($"\t\t{JsPropertyWriter.Write(jsProperty)}");
+                stringBuilder.AppendLine($"\t\t{JsPropertyWriter.Write(jsProperty)};");
             }
 
             stringBuilder.AppendLine("\t}");
