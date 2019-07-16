@@ -21,5 +21,7 @@ namespace CSharpToJs.Tests.Mocks
         [JsIgnore]
         public string IShouldBeIgnored { get; set; } = "true";
 
+        public IgnoredClass IgnoredClass { get; set; } = new IgnoredClass();
+
     }
 }
