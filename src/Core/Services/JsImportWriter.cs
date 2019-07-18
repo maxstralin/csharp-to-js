@@ -8,11 +8,11 @@ namespace CSharpToJs.Core.Services
 {
     public class JsImportWriter : IJsImportWriter
     {
-        public string Write(JsClass mainClass, JsClass dependency)
+        public string Write(string importName, string relativePath)
         {
-            var relativePath = new Uri(mainClass.FilePath).MakeRelativeUri(new Uri(dependency.FilePath)).ToString();
-            if (!relativePath.StartsWith("../")) relativePath = $"./{relativePath}";
-            return $"import {dependency.Name} from '{relativePath}';";
+            //var relativePath = new Uri(mainClass.FilePath).MakeRelativeUri(new Uri(dependency.FilePath)).ToString();
+            //if (!relativePath.StartsWith("../")) relativePath = $"./{relativePath}";
+            return $"import {importName} from '{relativePath}';";
         }
     }
 }

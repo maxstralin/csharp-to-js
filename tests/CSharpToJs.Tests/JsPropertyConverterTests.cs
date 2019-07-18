@@ -26,9 +26,15 @@ namespace CSharpToJs.Tests
             var expectedPropName = "iAmAProperty";
             var expectedValue = $"\"{dummy.IAmAProperty}\"";
 
-            var converter = new JsPropertyConverter(propInfo, orgValue, new List<string>(), new List<string>());
+            var converter = new JsPropertyConverter();
 
-            var jsProp = converter.Convert();
+            var jsProp = converter.Convert(new PropertyConverterContext
+            {
+                PropertyInfo = propInfo,
+                OriginalValue = orgValue,
+                ExcludedNamespaces = new List<string>(),
+                IncludedNamespaces = new List<string>()
+            });
 
             Assert.Same(orgValue, jsProp.OriginalValue);
             Assert.Same(propInfo, jsProp.PropertyInfo);
@@ -53,9 +59,15 @@ namespace CSharpToJs.Tests
             var expectedPropName = "aComplexType";
             var expectedValue = "new ComplexType()";
 
-            var converter = new JsPropertyConverter(propInfo, orgValue, new List<string> { "CSharpToJs.Tests.Mocks" }, new List<string>());
+            var converter = new JsPropertyConverter();
 
-            var jsProp = converter.Convert();
+            var jsProp = converter.Convert(new PropertyConverterContext
+            {
+                PropertyInfo = propInfo,
+                OriginalValue =  orgValue,
+                IncludedNamespaces = new List<string> { "CSharpToJs.Tests.Mocks" },
+                ExcludedNamespaces = new List<string>()
+            });
 
             Assert.Same(orgValue, jsProp.OriginalValue);
             Assert.Equal(expectedPropName, jsProp.Name);
@@ -79,9 +91,15 @@ namespace CSharpToJs.Tests
             var expectedPropName = "aComplexType";
             var expectedValue = JsonConvert.SerializeObject(dummy.AComplexType, Formatting.None, Settings.SerializerSettings);
 
-            var converter = new JsPropertyConverter(propInfo, orgValue, new List<string> { "CSharpToJs.Tests.Mocks" }, new List<string> { "CSharpToJs.Tests.Mocks" });
+            var converter = new JsPropertyConverter();
 
-            var jsProp = converter.Convert();
+            var jsProp = converter.Convert(new PropertyConverterContext
+            {
+                PropertyInfo = propInfo,
+                OriginalValue = orgValue,
+                IncludedNamespaces = new List<string> { "CSharpToJs.Tests.Mocks" },
+                ExcludedNamespaces = new List<string> { "CSharpToJs.Tests.Mocks" }
+            });
 
             Assert.Same(orgValue, jsProp.OriginalValue);
             Assert.Equal(expectedPropName, jsProp.Name);
@@ -92,13 +110,12 @@ namespace CSharpToJs.Tests
         [Fact]
         public void SetCustomNameConverter()
         {
-            var converter = new JsPropertyConverter(null, null, null, null);
+            var converter = new JsPropertyConverter();
             var nameConverter = new PropertyNameConverterMock();
 
             converter.PropertyNameConverter = nameConverter;
 
             Assert.Equal(nameConverter, converter.PropertyNameConverter);
-
         }
 
         [Fact]
@@ -110,8 +127,12 @@ namespace CSharpToJs.Tests
 
             var props = propResolver.GetProperties(typeof(DummyClass));
             var prop = props.Single(a => a.Name == nameof(DummyClass.IgnoredClass));
-            var propConverter = new JsPropertyConverter(prop, propValue, null, null);
-            var jsProp = propConverter.Convert();
+            var propConverter = new JsPropertyConverter();
+            var jsProp = propConverter.Convert(new PropertyConverterContext
+            {
+                PropertyInfo = prop,
+                OriginalValue = propValue,
+            });
 
             Assert.Equal(JsPropertyType.Plain, jsProp.PropertyType);
             Assert.Equal(jsProp.Value,

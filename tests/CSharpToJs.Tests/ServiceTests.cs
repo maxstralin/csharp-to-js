@@ -17,20 +17,26 @@ namespace CSharpToJs.Tests
         [Fact]
         public void DefaultDependencyResolver()
         {
-            var dependencyClass = new JsClass
+            var dependencyClass = new JsFile
             {
-                OriginalType = typeof(string)
+                JsClass = new JsClass
+                {
+                    OriginalType = typeof(string)
+                }
             };
-            var resolvingClass = new JsClass
+            var resolvingClass = new JsFile
             {
-                Dependencies = new List<Type> {typeof(string)}
+                JsClass = new JsClass
+                {
+                    Dependencies = new List<Type> { typeof(string) }
+                }
             };
-            var classes = new List<JsClass>{dependencyClass, resolvingClass};
-            var resolver = new JsClassDependencyResolver(classes);
+            var jsFiles = new List<JsFile> { dependencyClass, resolvingClass };
+            var resolver = new JsClassDependencyResolver(jsFiles);
 
-            var resolved = resolver.Resolve(resolvingClass);
+            var resolved = resolver.Resolve(resolvingClass.JsClass);
 
-            Assert.Contains(resolved, a => a.OriginalType == typeof(string));
+            Assert.Contains(resolved, a => a.JsClass.OriginalType == typeof(string));
         }
 
         [Fact]
@@ -95,24 +101,35 @@ namespace CSharpToJs.Tests
         public void JsImportWriter()
         {
             var writer = new JsImportWriter();
-            var mainClass = new JsClass
+            var mainFile = new JsFile
             {
-                Name = "Main",
-                FilePath = Path.Combine(Environment.CurrentDirectory,"Main.js")
+                JsClass = new JsClass
+                {
+                    Name = "Main",
+                },
+                FilePath = Path.Combine(Environment.CurrentDirectory, "Main.js")
             };
-            var dependencyNested = new JsClass
+            var dependencyNested = new JsFile
             {
-                Name = "Dep1",
+                JsClass = new JsClass
+                {
+                    Name = "Dep1",
+                },
                 FilePath = Path.Combine(Environment.CurrentDirectory, "subfolder", "Dep1.js")
             };
-            var dependencyAbove = new JsClass
+            var dependencyAbove = new JsFile
             {
-                Name = "Dep2",
+                JsClass = new JsClass
+                {
+                    Name = "Dep2",
+                },
                 FilePath = Path.Combine(Environment.CurrentDirectory, "../", "Dep2.js")
             };
 
-            var statementNested = writer.Write(mainClass, dependencyNested);
-            var statementAbove = writer.Write(mainClass, dependencyAbove);
+            var relativePathResolver = new RelativePathResolver();
+
+            var statementNested = writer.Write(dependencyNested.JsClass.Name, relativePathResolver.Resolve(mainFile.FilePath, dependencyNested.FilePath));
+            var statementAbove = writer.Write(dependencyAbove.JsClass.Name, relativePathResolver.Resolve(mainFile.FilePath, dependencyAbove.FilePath));
 
             Assert.Equal("import Dep1 from './subfolder/Dep1.js';", statementNested);
             Assert.Equal("import Dep2 from '../Dep2.js';", statementAbove);

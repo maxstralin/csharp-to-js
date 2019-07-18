@@ -5,6 +5,6 @@ namespace CSharpToJs.Core.Interfaces
 {
     public interface IJsPropertyConverter
     {
-        JsProperty Convert();
+        JsProperty Convert(PropertyConverterContext context);
     }
 }

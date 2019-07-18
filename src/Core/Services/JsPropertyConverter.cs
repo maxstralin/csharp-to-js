@@ -13,10 +13,6 @@ namespace CSharpToJs.Core.Services
 {
     public class JsPropertyConverter : IJsPropertyConverter
     {
-        private readonly PropertyInfo propertyInfo;
-        private readonly object originalValue;
-        private readonly ICollection<string> includedNamespaces;
-        private readonly ICollection<string> excludedNamespaces;
         public IPropertyNameConverter PropertyNameConverter { get; set; } = new PropertyNameConverter();
         public JsonSerializerSettings SerializerSettings = new JsonSerializerSettings
         {
@@ -27,32 +23,24 @@ namespace CSharpToJs.Core.Services
             }
         };
 
-        public JsPropertyConverter(PropertyInfo propertyInfo, object originalValue, ICollection<string> includedNamespaces, ICollection<string> excludedNamespaces)
+        public JsProperty Convert(PropertyConverterContext context)
         {
-            this.propertyInfo = propertyInfo;
-            this.originalValue = originalValue;
-            this.includedNamespaces = includedNamespaces ?? new List<string>();
-            this.excludedNamespaces = excludedNamespaces ?? new List<string>();
-        }
-
-        public JsProperty Convert()
-        {
-            var propName = PropertyNameConverter.GetPropertyName(propertyInfo);
-            var propValue = originalValue;
+            var propName = PropertyNameConverter.GetPropertyName(context.PropertyInfo);
+            var propValue = context.OriginalValue;
 
             var jsProp = new JsProperty
             {
                 Name = propName,
                 OriginalValue = propValue,
-                PropertyInfo = propertyInfo
+                PropertyInfo = context.PropertyInfo
             };
 
             //Nested complex type which should be instantiated through an import
-            if (propValue != null && !propertyInfo.PropertyType.IsEnum && !propertyInfo.PropertyType.IsGenericType &&
-                !excludedNamespaces.Contains(propertyInfo.PropertyType.Namespace) &&
-                includedNamespaces.Any(a => propertyInfo.PropertyType.Namespace.Contains(a)))
+            if (propValue != null && !context.PropertyInfo.PropertyType.IsEnum && !context.PropertyInfo.PropertyType.IsGenericType &&
+                !context.ExcludedNamespaces.Contains(context.PropertyInfo.PropertyType.Namespace) &&
+                context.IncludedNamespaces.Any(a => context.PropertyInfo.PropertyType.Namespace.Contains(a)))
             {
-                jsProp.Value = $"new {propertyInfo.PropertyType.Name}()";
+                jsProp.Value = $"new {context.PropertyInfo.PropertyType.Name}()";
                 jsProp.PropertyType = JsPropertyType.Instance;
             }
             else
