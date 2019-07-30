@@ -19,28 +19,37 @@ namespace CSharpToJs.Tests
             var dummy = new DummyClass
             {
                 Field = "IsField",
-                IAmAProperty = "IsProp"
+                IAmAProperty = "IsProp",
+                BoolProp = true,
+                IntegerProp = 10
             };
-            var propInfo = typeof(DummyClass).GetProperty(nameof(DummyClass.IAmAProperty));
-            var orgValue = propInfo.GetValue(dummy);
-            var expectedPropName = "iAmAProperty";
-            var expectedValue = $"\"{dummy.IAmAProperty}\"";
+            
+
+            var values = new Dictionary<string, string>
+            {
+                { nameof(dummy.IAmAProperty), $"\"{dummy.IAmAProperty}\""},
+                { nameof(dummy.IntegerProp), dummy.IntegerProp.ToString() },
+                { nameof(dummy.BoolProp), dummy.BoolProp.ToString().ToLower() }
+            };
 
             var converter = new JsPropertyConverter();
 
-            var jsProp = converter.Convert(new PropertyConverterContext
+            foreach (var (key, value) in values)
             {
-                PropertyInfo = propInfo,
-                OriginalValue = orgValue,
-                ExcludedNamespaces = new List<string>(),
-                IncludedNamespaces = new List<string>()
-            });
+                var propInfo = typeof(DummyClass).GetProperty(key);
+                var orgValue = propInfo.GetValue(dummy);
+                var jsProp = converter.Convert(new PropertyConverterContext
+                {
+                    PropertyInfo = propInfo,
+                    OriginalValue = orgValue
+                });
 
-            Assert.Same(orgValue, jsProp.OriginalValue);
-            Assert.Same(propInfo, jsProp.PropertyInfo);
-            Assert.Equal(expectedPropName, jsProp.Name);
-            Assert.Equal(JsPropertyType.Plain, jsProp.PropertyType);
-            Assert.Equal(expectedValue, jsProp.Value);
+                Assert.Same(orgValue, jsProp.OriginalValue);
+                Assert.Same(propInfo, jsProp.PropertyInfo);
+                Assert.Equal(key[0].ToString().ToLower()+key.Substring(1), jsProp.Name);
+                Assert.Equal(JsPropertyType.Plain, jsProp.PropertyType);
+                Assert.Equal(value, jsProp.Value);
+            }
         }
 
         [Fact]
@@ -49,7 +58,7 @@ namespace CSharpToJs.Tests
             var dummy = new DummyClass
             {
                 IAmAProperty = "IsProp",
-                AComplexType = new ComplexType()
+                AComplexType = new ComplexType
                 {
                     IsComplex = "very"
                 }
@@ -65,8 +74,7 @@ namespace CSharpToJs.Tests
             {
                 PropertyInfo = propInfo,
                 OriginalValue =  orgValue,
-                IncludedNamespaces = new List<string> { "CSharpToJs.Tests.Mocks" },
-                ExcludedNamespaces = new List<string>()
+                IncludedNamespaces = new List<string> { "CSharpToJs.Tests.Mocks" }
             });
 
             Assert.Same(orgValue, jsProp.OriginalValue);
