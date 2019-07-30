@@ -11,6 +11,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace CSharpToJs.Core.Services
 {
+    /// <inheritdoc />
     public class JsPropertyConverter : IJsPropertyConverter
     {
         public IPropertyNameConverter PropertyNameConverter { get; set; } = new PropertyNameConverter();
@@ -23,6 +24,7 @@ namespace CSharpToJs.Core.Services
             }
         };
 
+        /// <inheritdoc />
         public JsProperty Convert(PropertyConverterContext context)
         {
             var propName = PropertyNameConverter.GetPropertyName(context.PropertyInfo);

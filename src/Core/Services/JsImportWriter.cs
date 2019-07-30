@@ -6,12 +6,12 @@ using CSharpToJs.Core.Models;
 
 namespace CSharpToJs.Core.Services
 {
+    /// <inheritdoc />
     public class JsImportWriter : IJsImportWriter
     {
+        /// <inheritdoc />
         public string Write(string importName, string relativePath)
         {
-            //var relativePath = new Uri(mainClass.FilePath).MakeRelativeUri(new Uri(dependency.FilePath)).ToString();
-            //if (!relativePath.StartsWith("../")) relativePath = $"./{relativePath}";
             return $"import {importName} from '{relativePath}';";
         }
     }

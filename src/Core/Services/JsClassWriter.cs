@@ -6,6 +6,7 @@ using CSharpToJs.Core.Models;
 
 namespace CSharpToJs.Core.Services
 {
+    /// <inheritdoc />
     public class JsClassWriter : IClassWriter
     {
         public IJsClassDependencyResolver DependencyResolver { get; }
@@ -17,6 +18,7 @@ namespace CSharpToJs.Core.Services
             DependencyResolver = dependencyResolver;
         }
 
+        /// <inheritdoc />
         public string Write(JsFile jsFile)
         {
             var jsClass = jsFile.JsClass;
