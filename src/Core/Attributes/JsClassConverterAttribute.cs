@@ -5,6 +5,9 @@ using CSharpToJs.Core.Interfaces;
 
 namespace CSharpToJs.Core.Attributes
 {
+    /// <summary>
+    /// Override the default converter by providing a specific <see cref="IJsClassConverter"/> type
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class JsClassConverterAttribute : Attribute
     {
