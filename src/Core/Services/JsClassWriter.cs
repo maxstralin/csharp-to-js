@@ -28,7 +28,7 @@ namespace CSharpToJs.Core.Services
 
             foreach (var dependency in dependencies)
             {
-                stringBuilder.AppendLine(JsImportWriter.Write(jsClass.Name, relativePathResolver.Resolve(jsFile.FilePath, dependency.FilePath)));
+                stringBuilder.AppendLine(JsImportWriter.Write(dependency.JsClass.Name, relativePathResolver.Resolve(jsFile.FilePath, dependency.FilePath)));
             }
 
 
