@@ -141,9 +141,10 @@ namespace CSharpToJs.Core.Services
             {
                 var res = writer.Write(jsFile);
 
-                //Directory.CreateDirectory(Path.GetDirectoryName(jsClass.FilePath));
-                //Console.WriteLine($"Writing {jsClass.FilePath}");
-                //File.WriteAllText(jsClass.FilePath, res);
+
+                Directory.CreateDirectory(Path.GetDirectoryName(jsFile.FilePath));
+                Console.WriteLine($"Writing {jsFile.FilePath}");
+                File.WriteAllText(jsFile.FilePath, res);
             }
 
             Console.WriteLine("Done");
