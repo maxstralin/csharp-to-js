@@ -8,16 +8,16 @@ namespace CSharpToJs.Core.Services
 {
     public class JsClassDependencyResolver : IJsClassDependencyResolver
     {
-        private readonly List<JsClass> jsClasses;
+        private readonly List<JsFile> jsFiles;
 
-        public JsClassDependencyResolver(IEnumerable<JsClass> jsClasses)
+        public JsClassDependencyResolver(IEnumerable<JsFile> jsFiles)
         {
-            this.jsClasses = jsClasses.ToList();
+            this.jsFiles = jsFiles.ToList();
         }
 
-        public IEnumerable<JsClass> Resolve(JsClass jsClass)
+        public IEnumerable<JsFile> Resolve(JsClass jsClass)
         {
-            return jsClasses.Where(a => jsClass.Dependencies.Select(b => b.FullName).Contains(a.OriginalType.FullName));
+            return jsFiles.Where(a => jsClass.Dependencies.Select(b => b.FullName).Contains(a.JsClass.OriginalType.FullName));
         }
     }
 }

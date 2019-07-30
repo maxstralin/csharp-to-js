@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using CSharpToJs.Core.Attributes;
 using CSharpToJs.Core.Interfaces;
 using CSharpToJs.Core.Models;
 using Newtonsoft.Json;
@@ -23,9 +24,7 @@ namespace CSharpToJs.Core.Services
         private List<string> IncludedNamespaces { get; }
         private List<string> ExcludedNamespaces { get; }
 
-        private List<JsClass> JsClasses { get; } = new List<JsClass>();
-
-        private IPropertyResolver PropertyResolver { get; } = new PropertyResolver();
+        private List<JsFile> JsFiles { get; } = new List<JsFile>();
 
         public CSharpToJsConverter(CSharpToJsConfig config)
         {
@@ -33,14 +32,6 @@ namespace CSharpToJs.Core.Services
             OutputPath = Path.GetFullPath(config.OutputPath);
             IncludedNamespaces = config.Assemblies.SelectMany(a => a.Include).ToList();
             ExcludedNamespaces = config.Assemblies.SelectMany(a => a.Exclude).ToList();
-        }
-
-        private string GetRelativeOutputPath(Type type, string @namespace)
-        {
-            //TODO: .NET Standard 2.1 has Linq.SkipLast(1);
-            var path = type.FullName.Replace($"{@namespace}.", string.Empty).Split('.').ToList();
-
-            return Path.Combine(path.Take(path.Count - 1).ToArray());
         }
 
         private void LoadReferencesViaNugetCache(Assembly assembly)
@@ -97,6 +88,9 @@ namespace CSharpToJs.Core.Services
             if (!NoClean) CleanOutputDirectory();
             CreateOutputDirectory();
 
+            var classConverter = new JsClassConverter();
+            var outputPathResolver = new OutputPathResolver();
+
             foreach (var assemblyDetails in config.Assemblies)
             {
                 Console.WriteLine($"Getting types in {assemblyDetails.Name}");
@@ -113,55 +107,44 @@ namespace CSharpToJs.Core.Services
 
                     foreach (var type in foundTypes)
                     {
-                        var jsProperties = new Collection<JsProperty>();
-                        var dependencies = new List<Type>();
-                        var isDerived = IncludedNamespaces.Any(a => type.BaseType.Namespace.Contains(a)) &&
-                                        !ExcludedNamespaces.Contains(type.BaseType.Namespace);
-
-                        if (isDerived)
+                        var jsClass = classConverter.Convert(new ClassConverterContext
                         {
-                            dependencies.Add(type.BaseType);
-                        }
-
-                        var props = PropertyResolver.GetProperties(type);
-
-                        var instance = Activator.CreateInstance(type);
-
-                        var relativeOutputPath = GetRelativeOutputPath(type, ns);
-                        var filePath = Path.Combine(OutputPath, assemblyDetails.SubFolder ?? string.Empty,
-                            relativeOutputPath, $"{type.Name}.js");
-
-                        foreach (var prop in props)
+                            Type = type,
+                            ExcludedNamespaces = ExcludedNamespaces,
+                            IncludedNamespaces = IncludedNamespaces,
+                            ProcessingNamespace = ns,
+                            AssemblyDetails = assemblyDetails,
+                            Config = config
+                        });
+                        var outputPathContext = new OutputPathContext
                         {
-                            var jsProp = new JsPropertyConverter(prop, prop.GetValue(instance), IncludedNamespaces, ExcludedNamespaces).Convert();
-                            if (jsProp.PropertyType == JsPropertyType.Instance) dependencies.Add(prop.PropertyType);
-                            jsProperties.Add(jsProp);
-                        }
-
-                        var jsClass = new JsClass
-                        {
-                            Properties = jsProperties,
-                            Name = type.Name,
-                            Dependencies = dependencies.Distinct(),
-                            FilePath = filePath,
-                            OriginalType = type,
+                            JsClass = jsClass,
+                            AssemblyDetails = assemblyDetails,
+                            Config = config,
+                            ProcessingNamespace = ns
                         };
-                        JsClasses.Add(jsClass);
+                        var jsFile = new JsFile
+                        {
+                            FilePath = outputPathResolver.Resolve(outputPathContext),
+                            JsClass = jsClass
+                        };
+                        JsFiles.Add(jsFile);
                     }
                 }
             }
 
-            var dependencyResolver = new JsClassDependencyResolver(JsClasses);
+            var dependencyResolver = new JsClassDependencyResolver(JsFiles);
             var writer = new JsClassWriter(dependencyResolver);
 
             //TODO: Should be its own class for writing files
-            foreach (var jsClass in JsClasses)
+            foreach (var jsFile in JsFiles)
             {
-                var res = writer.Write(jsClass);
+                var res = writer.Write(jsFile);
 
-                Directory.CreateDirectory(Path.GetDirectoryName(jsClass.FilePath));
-                Console.WriteLine($"Writing {jsClass.FilePath}");
-                File.WriteAllText(jsClass.FilePath, res);
+
+                Directory.CreateDirectory(Path.GetDirectoryName(jsFile.FilePath));
+                Console.WriteLine($"Writing {jsFile.FilePath}");
+                File.WriteAllText(jsFile.FilePath, res);
             }
 
             Console.WriteLine("Done");

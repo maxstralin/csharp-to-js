@@ -4,6 +4,6 @@ namespace CSharpToJs.Core.Interfaces
 {
     public interface IJsImportWriter
     {
-        string Write(JsClass mainClass, JsClass dependency);
+        string Write(string importName, string relativePath);
     }
 }
