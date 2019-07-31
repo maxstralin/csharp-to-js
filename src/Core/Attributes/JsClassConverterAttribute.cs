@@ -13,14 +13,18 @@ namespace CSharpToJs.Core.Attributes
     {
         public IJsClassConverter ClassConverter { get; }
 
-        public JsClassConverterAttribute(Type classConverter)
+        /// <summary>
+        /// Override the default converter by providing a specific <see cref="IJsClassConverter"/> type
+        /// </summary>
+        /// <param name="classConverterType">An <see cref="IJsClassConverter"/> type</param>
+        public JsClassConverterAttribute(Type classConverterType)
         {
-            if (!typeof(IJsClassConverter).IsAssignableFrom(classConverter))
+            if (!typeof(IJsClassConverter).IsAssignableFrom(classConverterType))
             {
-                throw new ArgumentException("Type provided is not an implementation of IJsPropertyConverter", nameof(classConverter));
+                throw new ArgumentException("Type provided is not an implementation of IJsPropertyConverter", nameof(classConverterType));
             }
 
-            ClassConverter = Activator.CreateInstance(classConverter) as IJsClassConverter;
+            ClassConverter = Activator.CreateInstance(classConverterType) as IJsClassConverter;
         }
     }
 }
