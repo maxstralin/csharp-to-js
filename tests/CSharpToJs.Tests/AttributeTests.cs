@@ -37,6 +37,14 @@ namespace CSharpToJs.Tests
         }
 
         [Fact]
+        public void JsPropertyConverterAttribute_ThrowsIfNotAPropertyConverter()
+        {
+            Action action = () => new JsPropertyConverterAttribute(typeof(string));
+
+            Assert.Throws<ArgumentException>(action);
+        }
+
+        [Fact]
         public void DefaultPropertyResolverIgnoreAttribute()
         {
             var propertyResolver = new PropertyResolver();
@@ -55,6 +63,14 @@ namespace CSharpToJs.Tests
             var converter = resolver.Resolve(typeof(CustomClassConverterDummy));
 
             Assert.IsType<CustomClassConverterMock>(converter);
+        }
+
+        [Fact]
+        public void JsClassConverterAttribute_ThrowsIfNotAClassConverter()
+        {
+            Action action = () => new JsClassConverterAttribute(typeof(string));
+
+            Assert.Throws<ArgumentException>(action);
         }
 
     }
