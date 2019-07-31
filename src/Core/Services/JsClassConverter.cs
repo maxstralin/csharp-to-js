@@ -13,6 +13,7 @@ namespace CSharpToJs.Core.Services
 {
     public class JsClassConverter : IJsClassConverter
     {
+        public IPropertyResolver PropertyResolver { get; set; } = new PropertyResolver();
         public JsClass Convert(ClassConverterContext context)
         {
             var jsProperties = new Collection<JsProperty>();
@@ -23,8 +24,7 @@ namespace CSharpToJs.Core.Services
             var isDerived = type.BaseType != null && (includedNamespaces.Any(a => type.BaseType != null && type.BaseType.Namespace.Contains(a)) &&
                                                       !excludedNamespaces.Contains(type.BaseType.Namespace));
 
-            //TODO: Fetch from custom attribute [JsPropertyResolver] on the class
-            var propertyResolver = new PropertyResolver();
+            var propertyResolver = type.GetCustomAttribute<PropertyResolverAttribute>()?.PropertyResolver ?? PropertyResolver;
 
             if (isDerived)
             {

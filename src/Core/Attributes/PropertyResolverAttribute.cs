@@ -11,7 +11,7 @@ namespace CSharpToJs.Core.Attributes
     [AttributeUsage(AttributeTargets.Class)]
     public class PropertyResolverAttribute : Attribute
     {
-        public Type PropertyResolver { get; }
+        public IPropertyResolver PropertyResolver { get; }
 
         /// <summary>
         /// Override the default resolver by providing a specific <see cref="IPropertyResolver"/> type
@@ -23,7 +23,7 @@ namespace CSharpToJs.Core.Attributes
             {
                 throw new ArgumentException($"Type provided is not an implementation of {nameof(IPropertyResolver)}", nameof(propertyResolverType));
             }
-            PropertyResolver = propertyResolverType;
+            PropertyResolver = Activator.CreateInstance(propertyResolverType) as IPropertyResolver;
         }
     }
 }
