@@ -88,8 +88,9 @@ namespace CSharpToJs.Core.Services
             if (!NoClean) CleanOutputDirectory();
             CreateOutputDirectory();
 
-            var classConverter = new JsClassConverter();
+            var classConverterResolver = new ClassConverterResolver();
             var outputPathResolver = new OutputPathResolver();
+
 
             foreach (var assemblyDetails in config.Assemblies)
             {
@@ -107,6 +108,7 @@ namespace CSharpToJs.Core.Services
 
                     foreach (var type in foundTypes)
                     {
+                        var classConverter = classConverterResolver.Resolve(type);
                         var jsClass = classConverter.Convert(new ClassConverterContext
                         {
                             Type = type,

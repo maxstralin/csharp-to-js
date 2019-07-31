@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
 using CSharpToJs.Core.Attributes;
 
-namespace CSharpToJs.Tests.Mocks
+namespace CSharpToJs.Tests.Dummies
 {
-    public class DummyClass
+    public class ClassDummy
     {
         public string IAmAProperty { get; set; }
 
@@ -18,14 +15,14 @@ namespace CSharpToJs.Tests.Mocks
 
         public int IntegerProp { get; set; }
 
-        public ComplexType AComplexType { get; set; } = new ComplexType();
+        public ComplexTypeDummy AComplexType { get; set; } = new ComplexTypeDummy();
 
         [JsIgnore]
         public string IShouldBeIgnored { get; set; } = "true";
 
         public bool BoolProp { get; set; } 
 
-        public IgnoredClass IgnoredClass { get; set; } = new IgnoredClass();
+        public IgnoredDummy IgnoredClass { get; set; } = new IgnoredDummy();
 
     }
 }

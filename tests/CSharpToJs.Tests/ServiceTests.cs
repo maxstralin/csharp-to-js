@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using CSharpToJs.Core.Models;
 using CSharpToJs.Core.Services;
+using CSharpToJs.Tests.Dummies;
 using CSharpToJs.Tests.Mocks;
 using Newtonsoft.Json;
 using Xunit;
@@ -60,7 +61,7 @@ namespace CSharpToJs.Tests
         [Fact]
         public void DefaultPropertyNameConverter()
         {
-            var dummyClass = new DummyClass();
+            var dummyClass = new ClassDummy();
             var propertyName = nameof(dummyClass.IAmAProperty);
             var property = dummyClass.GetType().GetProperty(propertyName);
             var expected = "iAmAProperty";
@@ -75,26 +76,15 @@ namespace CSharpToJs.Tests
         public void DefaultPropertyResolver()
         {
             var propertyResolver = new PropertyResolver();
-            var shouldNotContain = nameof(DummyClass.Field);
-            var shouldContain = nameof(DummyClass.IAmAProperty);
+            var shouldNotContain = nameof(ClassDummy.Field);
+            var shouldContain = nameof(ClassDummy.IAmAProperty);
             var privateAutoPropertyName = "PrivateAutoProperty";
 
-            var props = propertyResolver.GetProperties(typeof(DummyClass)).ToList();
+            var props = propertyResolver.GetProperties(typeof(ClassDummy)).ToList();
 
             Assert.DoesNotContain(props, a => a.Name == shouldNotContain);
             Assert.DoesNotContain(props, a => a.Name == privateAutoPropertyName);
             Assert.Contains(props, a => a.Name == shouldContain);
-        }
-
-        [Fact]
-        public void DefaultPropertyResolverIgnoreAttribute()
-        {
-            var propertyResolver = new PropertyResolver();
-            var shouldNotContain = nameof(DummyClass.IShouldBeIgnored);
-
-            var props = propertyResolver.GetProperties(typeof(DummyClass)).ToList();
-
-            Assert.DoesNotContain(props, a => a.Name == shouldNotContain);
         }
 
         [Fact]
@@ -139,12 +129,20 @@ namespace CSharpToJs.Tests
         public void DefaultAssemblyTypeResolver()
         {
             var assembly = Assembly.LoadFrom(Path.Combine(Environment.CurrentDirectory, "CSharpToJs.Tests.dll"));
-            var resolver = new AssemblyTypeResolver(assembly, "CSharpToJs.Tests.Mocks", null);
+            var resolver = new AssemblyTypeResolver(assembly, "CSharpToJs.Tests", null);
 
-            var types = resolver.Resolve();
+            var types = resolver.Resolve().ToList();
 
-            Assert.Contains(typeof(DummyClass), types);
-            Assert.DoesNotContain(typeof(IgnoredClass), types);
+            Assert.Contains(typeof(ClassDummy), types);
+            Assert.DoesNotContain(typeof(IgnoredDummy), types);
+        }
+
+        [Fact]
+        public void DefaultClassConverterInResolver()
+        {
+            var resolver = new ClassConverterResolver();
+
+            Assert.IsType<JsClassConverter>(resolver.DefaultClassConverter);
         }
     }
 }

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using CSharpToJs.Core.Interfaces;
 
-namespace CSharpToJs.Tests.Mocks
+namespace CSharpToJs.Tests.Stubs
 {
-    public class PropertyNameConverterMock : IPropertyNameConverter
+    public class PropertyNameConverterStub : IPropertyNameConverter
     {
         public string GetPropertyName(PropertyInfo propertyInfo)
         {
