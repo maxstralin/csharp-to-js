@@ -23,7 +23,7 @@ namespace CSharpToJs.Core.Attributes
             {
                 throw new ArgumentException($"Type provided is not an implementation of {nameof(IPropertyResolver)}", nameof(propertyResolverType));
             }
-            PropertyResolver = Activator.CreateInstance(propertyResolverType) as IPropertyResolver;
+            PropertyResolver = (Activator.CreateInstance(propertyResolverType) as IPropertyResolver)!;
         }
     }
 }

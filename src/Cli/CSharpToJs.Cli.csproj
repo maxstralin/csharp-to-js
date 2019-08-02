@@ -17,6 +17,8 @@
     <RepositoryUrl>https://github.com/maxstralin/csharp-to-js</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>c#;javascript;js;dto;models;entities;csharp;conversion;</PackageTags>
+    <Nullable>enable</Nullable>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

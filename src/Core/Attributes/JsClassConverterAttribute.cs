@@ -23,8 +23,7 @@ namespace CSharpToJs.Core.Attributes
             {
                 throw new ArgumentException("Type provided is not an implementation of IJsPropertyConverter", nameof(classConverterType));
             }
-
-            ClassConverter = Activator.CreateInstance(classConverterType) as IJsClassConverter;
+            ClassConverter = (Activator.CreateInstance(classConverterType) as IJsClassConverter)!;
         }
     }
 }

@@ -28,7 +28,8 @@ namespace CSharpToJs.Core.Services
 
             if (isDerived)
             {
-                dependencies.Add(type.BaseType);
+                //We know it's not null because isDerived checks if it's null
+                dependencies.Add(type.BaseType!);
             }
 
             var props = propertyResolver.GetProperties(type);
@@ -44,23 +45,22 @@ namespace CSharpToJs.Core.Services
                 var customConverter = prop.GetCustomAttribute<JsPropertyConverterAttribute>();
                 var propertyConverter = customConverter?.PropertyConverter ?? new JsPropertyConverter();
                 var jsProp = propertyConverter.Convert(new PropertyConverterContext
-                {
-                    PropertyInfo = prop,
-                    OriginalValue = prop.GetValue(instance),
-                    IncludedNamespaces = includedNamespaces,
-                    ExcludedNamespaces = excludedNamespaces
-                });
+                (
+                    propertyInfo: prop,
+                    originalValue: prop.GetValue(instance),
+                    includedNamespaces: includedNamespaces,
+                    excludedNamespaces: excludedNamespaces
+                ));
                 if (jsProp.PropertyType == JsPropertyType.Instance) dependencies.Add(prop.PropertyType);
                 jsProperties.Add(jsProp);
             }
 
             return new JsClass
-            {
-                Properties = jsProperties,
-                Name = type.Name,
-                Dependencies = dependencies.Distinct(),
-                OriginalType = type,
-            };
+            (properties: jsProperties,
+                name: type.Name,
+                dependencies: dependencies.Distinct(),
+                originalType: type
+            );
         }
     }
 }

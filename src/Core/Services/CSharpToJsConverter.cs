@@ -109,27 +109,15 @@ namespace CSharpToJs.Core.Services
                     foreach (var type in foundTypes)
                     {
                         var classConverter = classConverterResolver.Resolve(type);
-                        var jsClass = classConverter.Convert(new ClassConverterContext
-                        {
-                            Type = type,
-                            ExcludedNamespaces = ExcludedNamespaces,
-                            IncludedNamespaces = IncludedNamespaces,
-                            ProcessingNamespace = ns,
-                            AssemblyDetails = assemblyDetails,
-                            Config = config
-                        });
-                        var outputPathContext = new OutputPathContext
-                        {
-                            JsClass = jsClass,
-                            AssemblyDetails = assemblyDetails,
-                            Config = config,
-                            ProcessingNamespace = ns
-                        };
-                        var jsFile = new JsFile
-                        {
-                            FilePath = outputPathResolver.Resolve(outputPathContext),
-                            JsClass = jsClass
-                        };
+                        var jsClass = classConverter.Convert(new ClassConverterContext(type: type,
+                            excludedNamespaces: ExcludedNamespaces,
+                            includedNamespaces: IncludedNamespaces,
+                            processingNamespace: ns,
+                            assemblyDetails: assemblyDetails,
+                            config: config
+                        ));
+                        var outputPathContext = new OutputPathContext(jsClass, ns, assemblyDetails, config);
+                        var jsFile = new JsFile(outputPathResolver.Resolve(outputPathContext),jsClass);
                         JsFiles.Add(jsFile);
                     }
                 }
