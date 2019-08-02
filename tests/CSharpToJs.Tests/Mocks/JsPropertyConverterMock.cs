@@ -10,11 +10,7 @@ namespace CSharpToJs.Tests.Mocks
     {
         public JsProperty Convert(PropertyConverterContext context)
         {
-            return new JsProperty
-            {
-                Name = "Custom",
-                Value = "Super"
-            };
+            return new JsProperty(JsPropertyType.Plain, "Custom", "Super", null, null);
         }
     }
 }

@@ -10,11 +10,7 @@ namespace CSharpToJs.Tests.Mocks
     {
         public JsClass Convert(ClassConverterContext context)
         {
-            return new JsClass
-            {
-                Name = "Custom",
-                OriginalType = typeof(CustomClassConverterMock)
-            };
+            return new JsClass("Custom", null, null, typeof(CustomClassConverterMock));
         }
     }
 }

@@ -8,7 +8,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>csharptojs</ToolCommandName>
     <PackageId>CSharpToJs</PackageId>
-    <Version>0.2.2</Version>
+    <Version>0.2.3</Version>
     <Authors>Max Strålin</Authors>
     <Company />
     <Description>A .NET core global tool for converting C# models and DTOs to Javascript</Description>
@@ -19,6 +19,7 @@
     <PackageTags>c#;javascript;js;dto;models;entities;csharp;conversion;</PackageTags>
     <Nullable>enable</Nullable>
     <LangVersion>8.0</LangVersion>
+    <Product>csharp-to-js</Product>
   </PropertyGroup>
 
   <ItemGroup>

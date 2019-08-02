@@ -9,14 +9,11 @@ namespace CSharpToJs.Tests.Mocks
 {
     public class PropertyResolverMock : IPropertyResolver
     {
-        public PropertyResolverMock PropMock = null;
+        public PropertyResolverMock PropMock { get; } = null;
 
         public IEnumerable<PropertyInfo> GetProperties(Type type)
         {
-            return new List<PropertyInfo>
-            {
-                GetType().GetProperty(nameof(PropMock))
-            };
+            return GetType().GetProperties();
         }
     }
 }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Resources;
+using System.Runtime.CompilerServices;
 using System.Text;
 using CSharpToJs.Core.Attributes;
 using CSharpToJs.Core.Interfaces;
@@ -20,20 +22,14 @@ namespace CSharpToJs.Tests
         [Fact]
         public void DefaultDependencyResolver()
         {
-            var dependencyClass = new JsFile
-            {
-                JsClass = new JsClass
-                {
-                    OriginalType = typeof(string)
-                }
-            };
-            var resolvingClass = new JsFile
-            {
-                JsClass = new JsClass
-                {
-                    Dependencies = new List<Type> { typeof(string) }
-                }
-            };
+            var dependencyClass = new JsFile(String.Empty,
+                new JsClass(string.Empty, Enumerable.Empty<JsProperty>(), Enumerable.Empty<Type>(), typeof(string)));
+        
+            var resolvingClass = new JsFile(string.Empty, new JsClass
+                (
+                    string.Empty, Enumerable.Empty<JsProperty>(), new List<Type> { typeof(string) }, GetType()
+                )
+            );
             var jsFiles = new List<JsFile> { dependencyClass, resolvingClass };
             var resolver = new JsClassDependencyResolver(jsFiles);
 
@@ -48,12 +44,8 @@ namespace CSharpToJs.Tests
             var propertyWriter = new JsPropertyWriter();
             var value = "value";
             var name = "name";
-            var property = new JsProperty
-            {
-                Value = value,
-                Name = name
-            };
-            var expected = $"this.{name} = {value}";
+            var property = new JsProperty(JsPropertyType.Plain, name, value, null, null);
+                var expected = $"this.{name} = {value}";
 
             var result = propertyWriter.Write(property);
 
@@ -93,30 +85,16 @@ namespace CSharpToJs.Tests
         public void JsImportWriter()
         {
             var writer = new JsImportWriter();
-            var mainFile = new JsFile
-            {
-                JsClass = new JsClass
-                {
-                    Name = "Main",
-                },
-                FilePath = Path.Combine(Environment.CurrentDirectory, "Main.js")
-            };
-            var dependencyNested = new JsFile
-            {
-                JsClass = new JsClass
-                {
-                    Name = "Dep1",
-                },
-                FilePath = Path.Combine(Environment.CurrentDirectory, "subfolder", "Dep1.js")
-            };
-            var dependencyAbove = new JsFile
-            {
-                JsClass = new JsClass
-                {
-                    Name = "Dep2",
-                },
-                FilePath = Path.Combine(Environment.CurrentDirectory, "../", "Dep2.js")
-            };
+            var mainFile = new JsFile(Path.Combine(Environment.CurrentDirectory, "Main.js"),
+                new JsClass("Main", Enumerable.Empty<JsProperty>(), Enumerable.Empty<Type>(), GetType()));
+
+            var dependencyNested = new JsFile(
+                Path.Combine(Environment.CurrentDirectory, "subfolder", "Dep1.js"),
+                new JsClass("Dep1", Enumerable.Empty<JsProperty>(), Enumerable.Empty<Type>(), GetType()));
+
+            var dependencyAbove = new JsFile(Path.Combine(Environment.CurrentDirectory, "../", "Dep2.js"),
+                new JsClass("Dep2", Enumerable.Empty<JsProperty>(), Enumerable.Empty<Type>(), GetType())
+            );
 
             var relativePathResolver = new RelativePathResolver();
 
@@ -152,7 +130,7 @@ namespace CSharpToJs.Tests
         {
             var mock = new CustomPropertyConverterClass();
             var propInfo = mock.GetType().GetProperty(nameof(mock.MyProperty));
-            var converterContext = new PropertyConverterContext();
+            var converterContext = new PropertyConverterContext(null, null, null, null);
 
             // The mock always returns "Custom": "Super" as the name/value
             var (expectedName, expectedValue) = ("Custom", "Super");
@@ -187,6 +165,19 @@ namespace CSharpToJs.Tests
             var converter = resolver.Resolve(typeof(CustomClassConverterDummy));
 
             Assert.IsType<CustomClassConverterMock>(converter);
+        }
+        [Fact]
+        public void PropertyResolverThroughAttribute()
+        {
+            var classConverter = new JsClassConverter();
+            var type = typeof(CustomPropertyResolverDummy);
+            var expectedName = "propMock";
+
+            var jsClass = classConverter.Convert(new ClassConverterContext(null, new CSharpToJsConfig(null, null, null), null, type, null, null));
+            var props = jsClass.Properties.ToList();
+            var prop = props.Single();
+
+            Assert.Equal(expectedName, prop.Name);
         }
 
     }

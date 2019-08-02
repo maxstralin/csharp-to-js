@@ -44,10 +44,21 @@ namespace CSharpToJs.Core.Services
             {
                 var customConverter = prop.GetCustomAttribute<JsPropertyConverterAttribute>();
                 var propertyConverter = customConverter?.PropertyConverter ?? new JsPropertyConverter();
+
+                object? propValue = null;
+                try
+                {
+                    propValue = prop.GetValue(instance);
+                }
+                catch
+                {
+                    Console.WriteLine($"Error in reading property value for {prop.Name} in {type.FullName}");
+                }
+
                 var jsProp = propertyConverter.Convert(new PropertyConverterContext
                 (
                     propertyInfo: prop,
-                    originalValue: prop.GetValue(instance),
+                    originalValue: propValue,
                     includedNamespaces: includedNamespaces,
                     excludedNamespaces: excludedNamespaces
                 ));

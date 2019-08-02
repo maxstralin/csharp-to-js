@@ -43,11 +43,7 @@ namespace CSharpToJs.Tests
             {
                 var propInfo = typeof(ClassDummy).GetProperty(key);
                 var orgValue = propInfo.GetValue(dummy);
-                var jsProp = converter.Convert(new PropertyConverterContext
-                {
-                    PropertyInfo = propInfo,
-                    OriginalValue = orgValue
-                });
+                var jsProp = converter.Convert(new PropertyConverterContext(propInfo, orgValue, null, null));
 
                 Assert.Same(orgValue, jsProp.OriginalValue);
                 Assert.Same(propInfo, jsProp.PropertyInfo);
@@ -72,15 +68,13 @@ namespace CSharpToJs.Tests
             var orgValue = propInfo.GetValue(dummy);
             var expectedPropName = "aComplexType";
             var expectedValue = "new ComplexTypeDummy()";
+            var converterContext = new PropertyConverterContext(propInfo, orgValue,
+                new List<string> {"CSharpToJs.Tests"}, null);
 
             var converter = new JsPropertyConverter();
 
-            var jsProp = converter.Convert(new PropertyConverterContext
-            {
-                PropertyInfo = propInfo,
-                OriginalValue =  orgValue,
-                IncludedNamespaces = new List<string> { "CSharpToJs.Tests" }
-            });
+            var jsProp =
+                converter.Convert(converterContext);
 
             Assert.Same(orgValue, jsProp.OriginalValue);
             Assert.Equal(expectedPropName, jsProp.Name);
@@ -106,13 +100,12 @@ namespace CSharpToJs.Tests
 
             var converter = new JsPropertyConverter();
 
-            var jsProp = converter.Convert(new PropertyConverterContext
-            {
-                PropertyInfo = propInfo,
-                OriginalValue = orgValue,
-                IncludedNamespaces = new List<string> { "CSharpToJs.Tests.Mocks" },
-                ExcludedNamespaces = new List<string> { "CSharpToJs.Tests.Mocks" }
-            });
+            var jsProp = converter.Convert(new PropertyConverterContext(
+                propInfo,
+                orgValue,
+                new List<string> { "CSharpToJs.Tests.Mocks" },
+                new List<string> { "CSharpToJs.Tests.Mocks" }
+            ));
 
             Assert.Same(orgValue, jsProp.OriginalValue);
             Assert.Equal(expectedPropName, jsProp.Name);
@@ -141,11 +134,8 @@ namespace CSharpToJs.Tests
             var props = propResolver.GetProperties(typeof(ClassDummy));
             var prop = props.Single(a => a.Name == nameof(ClassDummy.IgnoredClass));
             var propConverter = new JsPropertyConverter();
-            var jsProp = propConverter.Convert(new PropertyConverterContext
-            {
-                PropertyInfo = prop,
-                OriginalValue = propValue,
-            });
+            var propContext = new PropertyConverterContext(prop, propValue, null, null);
+            var jsProp = propConverter.Convert(propContext);
 
             Assert.Equal(JsPropertyType.Plain, jsProp.PropertyType);
             Assert.Equal(jsProp.Value,
