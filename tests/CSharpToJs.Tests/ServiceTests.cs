@@ -12,6 +12,7 @@ using CSharpToJs.Core.Models;
 using CSharpToJs.Core.Services;
 using CSharpToJs.Tests.Dummies;
 using CSharpToJs.Tests.Mocks;
+using CSharpToJs.Tests.Stubs;
 using Newtonsoft.Json;
 using Xunit;
 
@@ -44,12 +45,28 @@ namespace CSharpToJs.Tests
             var propertyWriter = new JsPropertyWriter();
             var value = "value";
             var name = "name";
-            var property = new JsProperty(JsPropertyType.Plain, name, value, null, null);
+            var property = new JsProperty(JsPropertyType.Plain, name, value, null, new PropertyInfoStub());
                 var expected = $"this.{name} = {value}";
 
             var result = propertyWriter.Write(property);
 
             Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void DefaultPropertyWriterForReadonlyProperty()
+        {
+            var propertyWriter = new JsPropertyWriter();
+            var propConverter = new JsPropertyConverter();
+            var dummy = new ComplexTypeDummy();
+            var expected = $"get {nameof(dummy.Readonly).ToLower()}() => true";
+                
+            var prop = dummy.GetType().GetProperty(nameof(dummy.Readonly));
+            var originalValue = prop.GetValue(dummy);
+            var jsProp = propConverter.Convert(new PropertyConverterContext(prop, originalValue, null, null));
+            var writtenProp = propertyWriter.Write(jsProp);
+            
+            Assert.Equal(expected, writtenProp);
         }
 
         [Fact]
