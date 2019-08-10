@@ -2,6 +2,7 @@
 {
     public class ComplexTypeDummy
     {
-        public string IsComplex = "yes";
+        public string IsComplex { get; set; } = "yes";
+        public bool Readonly { get; } = true;
     }
 }

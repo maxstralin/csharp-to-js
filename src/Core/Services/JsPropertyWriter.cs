@@ -7,6 +7,14 @@ namespace CSharpToJs.Core.Services
     public class JsPropertyWriter : IJsPropertyWriter
     {
         /// <inheritdoc />
-        public string Write(JsProperty jsProperty) => jsProperty.ToString();
+        public string Write(JsProperty jsProperty)
+        {
+            if (!jsProperty.PropertyInfo.CanWrite)
+            {
+                return $@"get {jsProperty.Name}() => {jsProperty.Value}";
+            }
+
+            return jsProperty.ToString();
+        }
     }
 }

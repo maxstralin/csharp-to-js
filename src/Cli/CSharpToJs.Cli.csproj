@@ -8,7 +8,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>csharptojs</ToolCommandName>
     <PackageId>CSharpToJs</PackageId>
-    <Version>0.3.0</Version>
+    <Version>0.3.5</Version>
     <Authors>Max Strålin</Authors>
     <Company />
     <Description>A .NET core global tool for converting C# models and DTOs to Javascript</Description>
@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSharpToJs.Core" Version="0.3.0" />
+    <PackageReference Include="CSharpToJs.Core" Version="0.3.5" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.4" />
   </ItemGroup>
 
