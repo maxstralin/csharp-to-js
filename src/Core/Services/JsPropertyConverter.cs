@@ -30,27 +30,33 @@ namespace CSharpToJs.Core.Services
             var propName = PropertyNameConverter.GetPropertyName(context.PropertyInfo);
             var propValue = context.OriginalValue;
 
-            var jsProp = new JsProperty
-            {
-                Name = propName,
-                OriginalValue = propValue,
-                PropertyInfo = context.PropertyInfo
-            };
+
+            JsPropertyType propertyType;
+            string propertyValue;
 
             //Nested complex type which should be instantiated through an import
             if (propValue != null && !context.PropertyInfo.PropertyType.IsEnum && !context.PropertyInfo.PropertyType.IsGenericType &&
                 !context.ExcludedNamespaces.Contains(context.PropertyInfo.PropertyType.Namespace) &&
                 context.IncludedNamespaces.Any(a => context.PropertyInfo.PropertyType.Namespace.Contains(a)))
             {
-                jsProp.Value = $"new {context.PropertyInfo.PropertyType.Name}()";
-                jsProp.PropertyType = JsPropertyType.Instance;
+                propertyValue = $"new {context.PropertyInfo.PropertyType.Name}()";
+                propertyType = JsPropertyType.Instance;
             }
             else
             {
-                jsProp.Value =
+                propertyValue =
                     JsonConvert.SerializeObject(propValue, Formatting.None, SerializerSettings);
-                jsProp.PropertyType = JsPropertyType.Plain;
+                propertyType = JsPropertyType.Plain;
             }
+
+            var jsProp = new JsProperty
+            (
+                propertyType: propertyType,
+                value: propertyValue,
+                name: propName,
+                originalValue: propValue,
+                propertyInfo: context.PropertyInfo
+            );
 
             return jsProp;
         }

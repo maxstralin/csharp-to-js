@@ -7,12 +7,20 @@ namespace CSharpToJs.Core.Models
 {
     public class OutputPathContext
     {
-        public JsClass JsClass { get; set; }
+        public OutputPathContext(JsClass jsClass, string processingNamespace, AssemblyDetails assemblyDetails, CSharpToJsConfig config)
+        {
+            JsClass = jsClass;
+            ProcessingNamespace = processingNamespace;
+            AssemblyDetails = assemblyDetails;
+            Config = config;
+        }
 
-        public string ProcessingNamespace { get; set; }
+        public JsClass JsClass { get; }
 
-        public AssemblyDetails AssemblyDetails { get; set; }
+        public string ProcessingNamespace { get; }
 
-        public CSharpToJsConfig Config { get; set; }
+        public AssemblyDetails AssemblyDetails { get; }
+
+        public CSharpToJsConfig Config { get; }
     }
 }

@@ -13,6 +13,7 @@ namespace CSharpToJs.Core.Services
 {
     public class JsClassConverter : IJsClassConverter
     {
+        public IPropertyResolver PropertyResolver { get; set; } = new PropertyResolver();
         public JsClass Convert(ClassConverterContext context)
         {
             var jsProperties = new Collection<JsProperty>();
@@ -22,13 +23,15 @@ namespace CSharpToJs.Core.Services
             var excludedNamespaces = context.ExcludedNamespaces?.ToList() ?? new List<string>();
             var isDerived = type.BaseType != null && (includedNamespaces.Any(a => type.BaseType != null && type.BaseType.Namespace.Contains(a)) &&
                                                       !excludedNamespaces.Contains(type.BaseType.Namespace));
+            Type? parentType = null;
 
-            //TODO: Fetch from custom attribute [JsPropertyResolver] on the class
-            var propertyResolver = new PropertyResolver();
+            var propertyResolver = type.GetCustomAttribute<PropertyResolverAttribute>()?.PropertyResolver ?? PropertyResolver;
 
             if (isDerived)
             {
-                dependencies.Add(type.BaseType);
+                //We know it's not null because isDerived checks if it's null
+                dependencies.Add(type.BaseType!);
+                parentType = type.BaseType;
             }
 
             var props = propertyResolver.GetProperties(type);
@@ -43,24 +46,36 @@ namespace CSharpToJs.Core.Services
             {
                 var customConverter = prop.GetCustomAttribute<JsPropertyConverterAttribute>();
                 var propertyConverter = customConverter?.PropertyConverter ?? new JsPropertyConverter();
-                var jsProp = propertyConverter.Convert(new PropertyConverterContext
+
+                object? propValue = null;
+                try
                 {
-                    PropertyInfo = prop,
-                    OriginalValue = prop.GetValue(instance),
-                    IncludedNamespaces = includedNamespaces,
-                    ExcludedNamespaces = excludedNamespaces
-                });
+                    propValue = prop.GetValue(instance);
+                }
+                catch
+                {
+                    Console.WriteLine($"Error in reading property value for {prop.Name} in {type.FullName}");
+                }
+
+                var jsProp = propertyConverter.Convert(new PropertyConverterContext
+                (
+                    prop,
+                    propValue,
+                    includedNamespaces,
+                    excludedNamespaces
+                ));
                 if (jsProp.PropertyType == JsPropertyType.Instance) dependencies.Add(prop.PropertyType);
                 jsProperties.Add(jsProp);
             }
 
             return new JsClass
-            {
-                Properties = jsProperties,
-                Name = type.Name,
-                Dependencies = dependencies.Distinct(),
-                OriginalType = type,
-            };
+                (properties: jsProperties,
+                    name: type.Name,
+                    dependencies: dependencies.Distinct(),
+                    originalType: type,
+                    isDerived: isDerived
+                )
+                {ParentType = parentType};
         }
     }
 }

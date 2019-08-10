@@ -6,6 +6,12 @@ namespace CSharpToJs.Core.Models
 {
     public class AssemblyNamespaceContext : AssemblyContext
     {
-        public string ProcessingNamespace { get; set; }
+        public AssemblyNamespaceContext(AssemblyDetails assemblyDetails, CSharpToJsConfig config, string processingNamespace) : base(assemblyDetails, config)
+        {
+            ProcessingNamespace = processingNamespace;
+        }
+
+        public string ProcessingNamespace { get; }
+
     }
 }

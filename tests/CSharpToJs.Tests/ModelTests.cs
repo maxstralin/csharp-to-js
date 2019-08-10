@@ -11,11 +11,7 @@ namespace CSharpToJs.Tests
         {
             var value = "value";
             var name = "name";
-            var jsProperty = new JsProperty
-            {
-                Value = value,
-                Name = name
-            };
+            var jsProperty = new JsProperty(JsPropertyType.Plain, name, value, null, null);
             var expected = $"this.{name} = {value}";
 
             var asString = jsProperty.ToString();

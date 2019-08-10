@@ -8,9 +8,17 @@ namespace CSharpToJs.Core.Models
 {
     public class PropertyConverterContext
     {
-        public PropertyInfo PropertyInfo { get; set; }
-        public object OriginalValue { get; set; }
-        public IEnumerable<string> IncludedNamespaces { get; set; } = Enumerable.Empty<string>();
-        public IEnumerable<string> ExcludedNamespaces { get; set; } = Enumerable.Empty<string>();
+        public PropertyConverterContext(PropertyInfo propertyInfo, object? originalValue, IEnumerable<string>? includedNamespaces, IEnumerable<string>? excludedNamespaces)
+        {
+            PropertyInfo = propertyInfo;
+            OriginalValue = originalValue;
+            IncludedNamespaces = includedNamespaces ?? Enumerable.Empty<string>();
+            ExcludedNamespaces = excludedNamespaces ?? Enumerable.Empty<string>();
+        }
+
+        public PropertyInfo PropertyInfo { get; }
+        public object? OriginalValue { get; }
+        public IEnumerable<string> IncludedNamespaces { get; } 
+        public IEnumerable<string> ExcludedNamespaces { get; } 
     }
 }

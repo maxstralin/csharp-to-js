@@ -4,7 +4,7 @@
     <PackageOutputPath>..\..\artifacts\</PackageOutputPath>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>CSharpToJs.Core</PackageId>
-    <Version>0.2.2</Version>
+    <Version>0.3.0</Version>
     <Authors>Max Strålin</Authors>
     <Company />
     <Description>Core class package for CSharpToJs, without the CLI</Description>
@@ -13,6 +13,8 @@
     <RepositoryUrl>https://github.com/maxstralin/csharp-to-js</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>c#;javascript;js;dto;models;entities;csharp;conversion;</PackageTags>
+    <Nullable>enable</Nullable>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

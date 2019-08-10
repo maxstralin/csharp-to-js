@@ -6,6 +6,11 @@ namespace CSharpToJs.Core.Models
 {
     public class ConfigContext
     {
-        public CSharpToJsConfig Config { get; set; }
+        public ConfigContext(CSharpToJsConfig config)
+        {
+            Config = config;
+        }
+
+        public CSharpToJsConfig Config { get; }
     }
 }

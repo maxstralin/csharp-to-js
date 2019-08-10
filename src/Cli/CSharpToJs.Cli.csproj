@@ -8,7 +8,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>csharptojs</ToolCommandName>
     <PackageId>CSharpToJs</PackageId>
-    <Version>0.2.2</Version>
+    <Version>0.3.0</Version>
     <Authors>Max Strålin</Authors>
     <Company />
     <Description>A .NET core global tool for converting C# models and DTOs to Javascript</Description>
@@ -17,6 +17,9 @@
     <RepositoryUrl>https://github.com/maxstralin/csharp-to-js</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>c#;javascript;js;dto;models;entities;csharp;conversion;</PackageTags>
+    <Nullable>enable</Nullable>
+    <LangVersion>8.0</LangVersion>
+    <Product>csharp-to-js</Product>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSharpToJs.Core" Version="0.2.2" />
+    <PackageReference Include="CSharpToJs.Core" Version="0.3.0" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.4" />
   </ItemGroup>
 

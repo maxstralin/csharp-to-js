@@ -7,6 +7,10 @@ namespace CSharpToJs.Core.Models
 {
     public class AssemblyContext : ConfigContext
     {
-        public AssemblyDetails AssemblyDetails { get; set; }
+        public AssemblyContext(AssemblyDetails assemblyDetails, CSharpToJsConfig config) : base(config) 
+        {
+            AssemblyDetails = assemblyDetails;
+        }
+        public AssemblyDetails AssemblyDetails { get; }
     }
 }
