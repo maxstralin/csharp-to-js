@@ -34,7 +34,7 @@ namespace CSharpToJs.Core.Services
             }
 
 
-            stringBuilder.Append($"class {jsClass.Name} sadsda");
+            stringBuilder.Append($"class {jsClass.Name}");
 
             if (jsClass.IsDerived)
             {

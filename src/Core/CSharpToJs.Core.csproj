@@ -15,6 +15,7 @@
     <PackageTags>c#;javascript;js;dto;models;entities;csharp;conversion;</PackageTags>
     <Nullable>enable</Nullable>
     <LangVersion>8.0</LangVersion>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
