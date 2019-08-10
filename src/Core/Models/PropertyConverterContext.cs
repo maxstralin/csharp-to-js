@@ -8,7 +8,7 @@ namespace CSharpToJs.Core.Models
 {
     public class PropertyConverterContext
     {
-        public PropertyConverterContext(PropertyInfo propertyInfo, object originalValue, IEnumerable<string>? includedNamespaces, IEnumerable<string>? excludedNamespaces)
+        public PropertyConverterContext(PropertyInfo propertyInfo, object? originalValue, IEnumerable<string>? includedNamespaces, IEnumerable<string>? excludedNamespaces)
         {
             PropertyInfo = propertyInfo;
             OriginalValue = originalValue;
@@ -17,7 +17,7 @@ namespace CSharpToJs.Core.Models
         }
 
         public PropertyInfo PropertyInfo { get; }
-        public object OriginalValue { get; }
+        public object? OriginalValue { get; }
         public IEnumerable<string> IncludedNamespaces { get; } 
         public IEnumerable<string> ExcludedNamespaces { get; } 
     }

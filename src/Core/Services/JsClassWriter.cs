@@ -34,13 +34,13 @@ namespace CSharpToJs.Core.Services
             }
 
 
-            stringBuilder.Append($"class {jsClass.Name} ");
+            stringBuilder.Append($"class {jsClass.Name} sadsda");
 
-            //TODO: Not sure if this is the right place to decide if it's a derived class
-            var inherits = dependencies.SingleOrDefault(a => a.JsClass.OriginalType == jsClass.OriginalType.BaseType);
-            if (inherits != null)
+            if (jsClass.IsDerived)
             {
-                stringBuilder.Append($"extends {inherits.JsClass.Name}");
+                var parentType = jsClass.ParentType;
+                var dependency = dependencies.Single(a => a.JsClass.OriginalType == parentType);
+                stringBuilder.Append($"extends {dependency.JsClass.Name}");
             }
 
             stringBuilder.AppendLine(" {");

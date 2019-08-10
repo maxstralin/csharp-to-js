@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSharpToJs.Core" Version="0.2.2" />
+    <PackageReference Include="CSharpToJs.Core" Version="0.2.4" />
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.4" />
   </ItemGroup>
 

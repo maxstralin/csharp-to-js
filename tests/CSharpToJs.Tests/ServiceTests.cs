@@ -23,11 +23,11 @@ namespace CSharpToJs.Tests
         public void DefaultDependencyResolver()
         {
             var dependencyClass = new JsFile(String.Empty,
-                new JsClass(string.Empty, Enumerable.Empty<JsProperty>(), Enumerable.Empty<Type>(), typeof(string)));
+                new JsClass(string.Empty, Enumerable.Empty<JsProperty>(), Enumerable.Empty<Type>(), typeof(string), false));
         
             var resolvingClass = new JsFile(string.Empty, new JsClass
                 (
-                    string.Empty, Enumerable.Empty<JsProperty>(), new List<Type> { typeof(string) }, GetType()
+                    string.Empty, Enumerable.Empty<JsProperty>(), new List<Type> { typeof(string) }, GetType(), false
                 )
             );
             var jsFiles = new List<JsFile> { dependencyClass, resolvingClass };
@@ -86,14 +86,14 @@ namespace CSharpToJs.Tests
         {
             var writer = new JsImportWriter();
             var mainFile = new JsFile(Path.Combine(Environment.CurrentDirectory, "Main.js"),
-                new JsClass("Main", Enumerable.Empty<JsProperty>(), Enumerable.Empty<Type>(), GetType()));
+                new JsClass("Main", Enumerable.Empty<JsProperty>(), Enumerable.Empty<Type>(), GetType(), false));
 
             var dependencyNested = new JsFile(
                 Path.Combine(Environment.CurrentDirectory, "subfolder", "Dep1.js"),
-                new JsClass("Dep1", Enumerable.Empty<JsProperty>(), Enumerable.Empty<Type>(), GetType()));
+                new JsClass("Dep1", Enumerable.Empty<JsProperty>(), Enumerable.Empty<Type>(), GetType(), false));
 
             var dependencyAbove = new JsFile(Path.Combine(Environment.CurrentDirectory, "../", "Dep2.js"),
-                new JsClass("Dep2", Enumerable.Empty<JsProperty>(), Enumerable.Empty<Type>(), GetType())
+                new JsClass("Dep2", Enumerable.Empty<JsProperty>(), Enumerable.Empty<Type>(), GetType(), false)
             );
 
             var relativePathResolver = new RelativePathResolver();
@@ -178,6 +178,34 @@ namespace CSharpToJs.Tests
             var prop = props.Single();
 
             Assert.Equal(expectedName, prop.Name);
+        }
+
+        [Fact]
+        public void JsClassConverterForDerivedClass()
+        {
+            var converter = new JsClassConverter();
+            var derivedClass = typeof(DerivedClassDummy);
+            var parentClass = typeof(ClassDummy);
+            var namespaces = new[] {"CSharpToJs"};
+
+            var jsClass = converter.Convert(new ClassConverterContext(null, new CSharpToJsConfig(null, null, null), null,
+                derivedClass, namespaces, null));
+
+            Assert.True(jsClass.IsDerived);
+            Assert.Equal(parentClass, jsClass.ParentType);
+        }
+        [Fact]
+        public void DerivedFromExcludedNamespace_ShouldNotCountAsDerived()
+        {
+            var converter = new JsClassConverter();
+            var derivedClass = typeof(DerivedClassDummy);
+            var namespaces = new[] { "CSharpToJs" };
+
+            var jsClass = converter.Convert(new ClassConverterContext(null, new CSharpToJsConfig(null, null, null), null,
+                derivedClass, namespaces, new []{ "CSharpToJs.Tests.Dummies" }));
+
+            Assert.False(jsClass.IsDerived);
+            Assert.Null(jsClass.ParentType);
         }
 
     }

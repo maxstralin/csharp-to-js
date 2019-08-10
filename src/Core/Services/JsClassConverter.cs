@@ -23,6 +23,7 @@ namespace CSharpToJs.Core.Services
             var excludedNamespaces = context.ExcludedNamespaces?.ToList() ?? new List<string>();
             var isDerived = type.BaseType != null && (includedNamespaces.Any(a => type.BaseType != null && type.BaseType.Namespace.Contains(a)) &&
                                                       !excludedNamespaces.Contains(type.BaseType.Namespace));
+            Type? parentType = null;
 
             var propertyResolver = type.GetCustomAttribute<PropertyResolverAttribute>()?.PropertyResolver ?? PropertyResolver;
 
@@ -30,6 +31,7 @@ namespace CSharpToJs.Core.Services
             {
                 //We know it's not null because isDerived checks if it's null
                 dependencies.Add(type.BaseType!);
+                parentType = type.BaseType;
             }
 
             var props = propertyResolver.GetProperties(type);
@@ -57,21 +59,23 @@ namespace CSharpToJs.Core.Services
 
                 var jsProp = propertyConverter.Convert(new PropertyConverterContext
                 (
-                    propertyInfo: prop,
-                    originalValue: propValue,
-                    includedNamespaces: includedNamespaces,
-                    excludedNamespaces: excludedNamespaces
+                    prop,
+                    propValue,
+                    includedNamespaces,
+                    excludedNamespaces
                 ));
                 if (jsProp.PropertyType == JsPropertyType.Instance) dependencies.Add(prop.PropertyType);
                 jsProperties.Add(jsProp);
             }
 
             return new JsClass
-            (properties: jsProperties,
-                name: type.Name,
-                dependencies: dependencies.Distinct(),
-                originalType: type
-            );
+                (properties: jsProperties,
+                    name: type.Name,
+                    dependencies: dependencies.Distinct(),
+                    originalType: type,
+                    isDerived: isDerived
+                )
+                {ParentType = parentType};
         }
     }
 }
