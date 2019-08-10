@@ -4,7 +4,7 @@
     <PackageOutputPath>..\..\artifacts\</PackageOutputPath>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>CSharpToJs.Core</PackageId>
-    <Version>0.2.4</Version>
+    <Version>0.3.0</Version>
     <Authors>Max Strålin</Authors>
     <Company />
     <Description>Core class package for CSharpToJs, without the CLI</Description>
