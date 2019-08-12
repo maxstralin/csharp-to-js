@@ -57,6 +57,23 @@ namespace CSharpToJs.Tests
         }
 
         [Fact]
+        public void AssemblyDetails_ConstructorSetsProps()
+        {
+            var name = "Name";
+            var subFolder = "Sub";
+            var include = new List<string>();
+            var exclude = new List<string>();
+
+            var details = new AssemblyDetails("Name", subFolder, include, exclude);
+
+            Assert.Equal(name, details.Name);
+            Assert.Equal(subFolder, details.SubFolder);
+            Assert.Same(include, details.Include);
+            Assert.Same(exclude, details.Exclude);
+        }
+
+
+        [Fact]
         public void AssemblyNamespaceContext_ConstructorSetsProps()
         {
             var assemblyDetails = new AssemblyDetails("name", null, null, null);
