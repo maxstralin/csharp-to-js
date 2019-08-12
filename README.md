@@ -116,6 +116,39 @@ Assembly details
 }
 ```
 
+### Customise behaviour
+#### Attributes
+**JsClassConverterAttribute**  
+Provide your own implementation of an [IJsClassConverter](./src/Core/Interfaces/IJsClassConverter.cs) for a class
+```csharp
+[JsClassConverter(typeof(IJsClassConverter)]
+public class Class {}
+```
+
+**JsIgnoreAttribute**  
+Ignore a property or a class on conversion
+```csharp
+[JsIgnore]
+public class Class {
+    [JsIgnore]
+    public bool Property { get; set; }
+}
+```
+
+**JsPropertyConverterAttribute**  
+Provide your own implementation of an [IJsPropertyConverter](./src/Core/Interfaces/IJsPropertyConverter.cs) for a property.
+```csharp
+[JsPropertyConverter(typeof(IJsPropertyConverter))]
+public bool Property { get; set; }
+```
+
+**PropertyResolverAttribute**  
+Provide your own implementation of an [IPropertyResolver](./src/Core/Interfaces/IPropertyResolver.cs) for a class
+```csharp
+[PropertyResolver(typeof(IPropertyResolver))]
+public class Class {}
+```
+
 ## Examples
 A simple example using Vue.js
 
