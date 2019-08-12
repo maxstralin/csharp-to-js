@@ -24,7 +24,7 @@ namespace CSharpToJs.Tests
             var outputPath = "C:/Dummy";
             var expectedPath = $"{outputPath}{Path.DirectorySeparatorChar}DummyClass.js";
             
-            var context = new OutputPathContext(jsClass, ns, assemblyDetails, new CSharpToJsConfig(string.Empty, null, outputPath));
+            var context = new OutputPathContext(jsClass, ns, assemblyDetails, new CSharpToJsConfig("Path", Enumerable.Empty<AssemblyDetails>(), outputPath));
             var res = resolver.Resolve(context);
             
             Assert.Equal(expectedPath, res);
@@ -111,7 +111,7 @@ namespace CSharpToJs.Tests
             var type = typeof(CustomPropertyResolverDummy);
             var expectedName = "propMock";
 
-            var jsClass = classConverter.Convert(new ClassConverterContext(null, new CSharpToJsConfig(null, null, null), null, type, null, null));
+            var jsClass = classConverter.Convert(new ClassConverterContext(null, new CSharpToJsConfig("Path", Enumerable.Empty<AssemblyDetails>(), "Path"), null, type, null, null));
             var props = jsClass.Properties.ToList();
             var prop = props.Single();
 

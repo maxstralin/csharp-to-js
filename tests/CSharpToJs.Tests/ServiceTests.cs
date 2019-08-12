@@ -111,7 +111,7 @@ namespace CSharpToJs.Tests
             var parentClass = typeof(ClassDummy);
             var namespaces = new[] {"CSharpToJs"};
 
-            var jsClass = converter.Convert(new ClassConverterContext(null, new CSharpToJsConfig(null, null, null), null,
+            var jsClass = converter.Convert(new ClassConverterContext(null, new CSharpToJsConfig("Path", Enumerable.Empty<AssemblyDetails>(), "Path"), null,
                 derivedClass, namespaces, null));
 
             Assert.True(jsClass.IsDerived);
@@ -125,7 +125,7 @@ namespace CSharpToJs.Tests
             var derivedClass = typeof(DerivedClassDummy);
             var namespaces = new[] { "CSharpToJs" };
 
-            var jsClass = converter.Convert(new ClassConverterContext(null, new CSharpToJsConfig(null, null, null), null,
+            var jsClass = converter.Convert(new ClassConverterContext(null, new CSharpToJsConfig("Path", Enumerable.Empty<AssemblyDetails>(), "Path"), null,
                 derivedClass, namespaces, new []{ "CSharpToJs.Tests.Dummies" }));
 
             Assert.False(jsClass.IsDerived);

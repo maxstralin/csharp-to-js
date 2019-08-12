@@ -16,7 +16,7 @@ namespace CSharpToJs.Core.Models
         /// <summary>
         /// Filename of the assembly, without .dll
         /// </summary>
-        public string Name { get;  }
+        public string Name { get; }
         /// <summary>
         /// Subfolder to output this assembly's JS files to
         /// </summary>

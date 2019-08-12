@@ -1,14 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace CSharpToJs.Core.Models
 {
     public class CSharpToJsConfig
     {
-        public CSharpToJsConfig(string assembliesPath, IEnumerable<AssemblyDetails> assemblies, string outputPath)
+        public CSharpToJsConfig([NotNull] string assembliesPath, [NotNull] IEnumerable<AssemblyDetails> assemblies,
+            [NotNull] string outputPath)
         {
+            if (string.IsNullOrEmpty(assembliesPath))
+                throw new ArgumentException("Value cannot be null or empty.", nameof(assembliesPath));
+            if (string.IsNullOrEmpty(outputPath))
+                throw new ArgumentException("Value cannot be null or empty.", nameof(outputPath));
             AssembliesPath = assembliesPath;
-            Assemblies = assemblies;
+            Assemblies = assemblies ?? throw new ArgumentNullException(nameof(assemblies));
             OutputPath = outputPath;
         }
 
