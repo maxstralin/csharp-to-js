@@ -3,9 +3,11 @@ using System.Linq;
 using System.Text;
 using CSharpToJs.Core.Interfaces;
 using CSharpToJs.Core.Models;
+using JetBrains.Annotations;
 
 namespace CSharpToJs.Core.Services
 {
+    //TODO: Currently very basic test, needs more advanced situations
     /// <inheritdoc />
     public class JsClassWriter : IClassWriter
     {
@@ -13,9 +15,9 @@ namespace CSharpToJs.Core.Services
         public IJsPropertyWriter JsPropertyWriter { get; set; } = new JsPropertyWriter();
         public IJsImportWriter JsImportWriter { get; set; } = new JsImportWriter();
 
-        public JsClassWriter(IJsClassDependencyResolver dependencyResolver)
+        public JsClassWriter([NotNull] IJsClassDependencyResolver dependencyResolver)
         {
-            DependencyResolver = dependencyResolver;
+            DependencyResolver = dependencyResolver ?? throw new ArgumentNullException(nameof(dependencyResolver));
         }
 
         /// <inheritdoc />
